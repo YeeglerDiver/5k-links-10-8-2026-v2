@@ -1,47 +1,78 @@
-name: Mirror Portal and Package
+name: Scrape Assets Directly to Repo Root
 
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  scrape-and-bundle:
+  scrape-and-commit:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Recursively Crawl Portal Assets
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Scrape and Discover Assets Directly in Root
         run: |
-          mkdir -p site_bundle
-          cd site_bundle
+          BASE="https://ixl.com.pulsaudio.ro"
 
-          # 1. Mirror known static files recursively using native GNU wget
-          wget \
-            --mirror \
-            --page-requisites \
-            --adjust-extension \
-            --no-parent \
-            --convert-links \
-            --no-clobber \
-            --no-host-directories \
-            https://ixl.com.pulsaudio.ro/ || true
+          # 1. Fetch core configuration files into repo root
+          echo "Fetching primary files..."
+          wget -q -nc -x -nH "$BASE/index.html" || true
+          wget -q -nc -x -nH "$BASE/manifest.webmanifest" || true
+          wget -q -nc -x -nH "$BASE/sw.js" || true
+          wget -q -nc -x -nH "$BASE/data/apps.json" || true
+          wget -q -nc -x -nH "$BASE/books/books.json" || true
 
-          # 2. Extract catalog file paths from apps.json and books.json using jq
-          if [ -f data/apps.json ]; then
-            grep -o -E 'books/html/[a-zA-Z0-9_\-\./]+' data/apps.json | while read -r path; do
-              wget -q -x -nH "https://ixl.com.pulsaudio.ro/$path" || true
+          # 2. Extract catalog file targets directly from apps.json and books.json
+          echo "Extracting entries from catalogs..."
+          if [ -f "data/apps.json" ]; then
+            grep -o -E '[a-zA-Z0-9_\-\./]+\.(html|png|webp|jpg|js|css|json)' data/apps.json | sort -u | while read -r item; do
+              clean=$(echo "$item" | sed 's|^/||')
+              wget -q -nc -x -nH "$BASE/$clean" || true
             done
           fi
 
-          if [ -f books/books.json ]; then
-            grep -o -E 'books/thumbs/[a-zA-Z0-9_\-\.]+' books/books.json | while read -r thumb; do
-              wget -q -x -nH "https://ixl.com.pulsaudio.ro/$thumb" || true
-            done
-            grep -o -E 'books/covers/[a-zA-Z0-9_\-\.]+' books/books.json | while read -r cover; do
-              wget -q -x -nH "https://ixl.com.pulsaudio.ro/$cover" || true
+          if [ -f "books/books.json" ]; then
+            grep -o -E '[a-zA-Z0-9_\-\./]+\.(html|png|webp|jpg|json)' books/books.json | sort -u | while read -r item; do
+              clean=$(echo "$item" | sed 's|^/||')
+              wget -q -nc -x -nH "$BASE/$clean" || true
             done
           fi
 
-      - name: Upload Scraped Archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: portal-archive
-          path: site_bundle/
+          # 3. Multi-pass discovery: scan all downloaded JS/HTML/CSS for nested dependencies
+          echo "Beginning multi-pass asset extraction..."
+          for round in 1 2 3; do
+            echo "--- Scan Round $round ---"
+            find . -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -not -path '*/.*' \
+              -exec grep -o -E '([a-zA-Z0-9_\-\./]+)\.(js|css|json|wasm|data|png|jpg|jpeg|webp|svg|webm|mp3|ogg|wav)' {} + \
+              | awk -F: '{print $2}' \
+              | sed -e 's/^[ \t]*//' -e "s/[\"']//g" -e 's|^/||' \
+              | grep -v -E '^(http|https|//)' \
+              | sort -u | while read -r asset; do
+                if [ ! -f "$asset" ]; then
+                  wget -q -nc -x -nH "$BASE/$asset" || true
+                fi
+              done
+          done
+
+          # 4. Fallback route handlers for Single Page Application navigation
+          echo "Setting up local fallback directories..."
+          for route in os reviews linux help; do
+            mkdir -p "$route"
+            [ -f index.html ] && cp index.html "$route/index.html"
+          done
+
+      - name: Commit and Push Directly to Root
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No new files to commit."
+          else
+            git commit -m "Auto-scrape web portal assets into repository root"
+            git push
+          fi
