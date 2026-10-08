@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=301",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="3D Bowling"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+	<base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/3d-bowling/">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1, IE=edge">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+	<link rel="manifest" href="site.webmanifest">
+	<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+
+	<title>3D Bowling</title>
+
+	<style>
+		html,body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+		#openfl-content { background: #000000; width: 100%; height: 100%; }
+	</style>
+
+	<script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="QdNkmbwYlsxOfu8MuJCDFQ"></script> 
+	<script type="text/javascript" nonce="QdNkmbwYlsxOfu8MuJCDFQ"> 
+	   	ytgame.game.firstFrameReady(); 
+	</script>
+
+	<script src="game-interface.js?gameId=3d-bowling" nonce="QdNkmbwYlsxOfu8MuJCDFQ"></script>
+
+	<script nonce="QdNkmbwYlsxOfu8MuJCDFQ">
+		window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, false);
+
+		window.GameInterface.init([
+			"base64Logo.js",
+			"lib/howler.min.js",
+			"lib/pako.min.js",
+			"game.js",
+		]).then(() => {
+
+			function resumeAudioIfNeeded() {
+				if(Howler && Howler.ctx && (Howler.ctx.state === "suspended" || Howler.ctx.state === "interrupted")) {
+					Howler.ctx.resume().then(function () {
+						console.log("[audio-fix] AudioContext resumed");
+					}).catch(function (e) {
+						console.warn("[audio-fix] Resume failed:", e);
+					});
+				}
+			}
+			document.addEventListener("touchstart", resumeAudioIfNeeded);
+			document.addEventListener("mousedown", resumeAudioIfNeeded);
+
+			lime.embed ("openfl-content", 0, 0, "E4631D");
+		});
+	</script>
+<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+<body>
+	<div id="openfl-content"></div>
+</body>
+</html>

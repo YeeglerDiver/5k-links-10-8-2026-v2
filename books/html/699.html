@@ -1,0 +1,221 @@
+
+<html lang="en-us">
+
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=674",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Stickman Destruction"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+  <meta charset="utf-8">
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/stickman-destruction/">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Stickman Destruction - OnlineGames.io</title>
+
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+
+  <script src="TemplateData/UnityProgress.js"></script>
+  <script src="Build/UnityLoader.js"></script>
+
+
+  <style type="text/css">
+    body {
+      overflow: hidden;
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  
+  
+
+  <script>
+    function SubmitLeaderboardScore(newScore) {
+
+    }
+
+    function GetLeaderboardEntries() {
+
+    }
+
+    function InitApi(_appId) {
+      var dateNow = new Date();
+      var secondsSinceEpoch = Math.round(dateNow.getTime() / 1000);
+
+      console.log('InitApi');
+
+      window.callTime = secondsSinceEpoch - 121;
+    }
+
+    function InitExternEval(_appId) {
+      console.log("InitExternEval");
+
+      ExternEval();
+    }
+
+    function ExternEval() {
+      console.log("ExternEval");
+
+      var dateNow = new Date();
+      var secondsSinceEpoch = Math.round(dateNow.getTime() / 1000);
+
+      if (window.callTime != undefined &&
+        secondsSinceEpoch - window.callTime > 120) {
+        console.log('ExternEval 2');
+
+        window.callTime = secondsSinceEpoch;
+
+        if (typeof preroll !== 'undefined') {
+          if (window[preroll.config.loaderObjectName] != undefined) {
+            gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onOpen');
+
+            try {
+              window[preroll.config.loaderObjectName].refetchAd(ExternEvalResumeGame);
+            } catch (err) {
+              console.log(err.message);
+              gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onClose');
+            }
+          }
+        }
+      }
+
+    }
+
+    function ExternEvalResumeGame() {
+      console.log("ExternEvalResumeGame");
+
+      gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onClose');
+    }
+
+    function PreloadRewarded() {
+      console.log("PreloadRewarded");
+
+      if (window.rewardedCallbacks == undefined) {
+        window.rewardedCallbacks = true;
+
+        try {
+          window[window.preroll.config.loaderObjectName].registerRewardCallbacks({
+            onReady: RewardedReady,
+            onSuccess: RewardedSuccess,
+            onFail: RewardedFail,
+            onClose: RewardedClose
+          });
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
+    }
+
+    function ShowRewarded() {
+      console.log("ShowRewarded");
+
+      if (typeof preroll !== 'undefined') {
+        if (window.rewardedCallbacks == undefined) {
+          PreloadRewarded();
+        }
+
+        if (window[preroll.config.loaderObjectName] != undefined) {
+          gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onOpen');
+
+          try {
+            window[preroll.config.loaderObjectName].showRewardAd();
+          } catch (err) {
+            console.log(err.message);
+            gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onClose');
+          }
+        }
+      }
+
+    }
+
+    function RewardedReady() {
+      console.log("RewardedReady");
+
+      if (window.rewardedCount == undefined) {
+        window.rewardedCount = 1;
+        window.gameInstance.SendMessage('FreezeNovaAPI', 'RewardedReady');
+      } else {
+        window.rewardedCount = window.rewardedCount + 1;
+        //setTimeout(function(){ window.gameInstance.SendMessage('FreezeNovaAPI', 'RewardedReady'); }, 30000);
+        window.gameInstance.SendMessage('FreezeNovaAPI', 'RewardedReady');
+      }
+
+    }
+
+    function RewardedSuccess() {
+      console.log("RewardedSuccess");
+      gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'RewardedOnRewarded');
+      //gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onClose');
+    }
+
+    function RewardedFail() {
+      console.log("RewardedFail");
+      gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'RewardedOnFail');
+      //gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onClose');
+    }
+
+    function RewardedClose() {
+      console.log("RewardedClose");
+      gameInstance.SendMessage('FreezeNovaAPI', 'AdMessage', 'onClose');
+    }
+
+    InitApi(0);
+  </script>
+
+
+  <script>
+    function FitScreen() {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+
+      var availWidth = window.innerWidth;
+      var availHeight = window.innerHeight;
+
+      var canvas = document.getElementById("#canvas");
+      if (availWidth / availHeight > w / h) {
+        height = availHeight;
+        width = (height * w / h);
+      } else {
+        width = availWidth;
+        height = width * h / w;
+      }
+
+      //canvas.width = width;
+      //canvas.height = height;
+
+      document.getElementById("gameContainer").style.width = width + "px";
+      document.getElementById("gameContainer").style.height = height + "px";
+
+    }
+
+    var gameInstance = UnityLoader.instantiate("gameContainer", "Build/game.json", {
+      onProgress: UnityProgress
+    });
+  </script>
+
+<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+
+<body onfocus="FitScreen();" onload="FitScreen();" onresize="FitScreen();" style="width:100%; height:100%">
+  <div class="webgl-content">
+    <div id="gameContainer" style="width: auto; height: auto"></div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=875",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Minecraftbeta"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0px;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #111 url(bg_main.png);
+      }
+
+      .canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .log {
+        color: #f67;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+        position: absolute;
+        left: 10px;
+        bottom: 30px;
+        font-weight: bold;
+      }
+    </style>
+    <title>Classic Minecraft Hacks</title>
+    <link rel="icon" href="bg_main.png">
+  <!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+  <body>
+    <canvas width="1000" height="562" class="canvas"></canvas>
+    <span class="log"></span>
+    <script>
+      const canvas = document.querySelector(".canvas");
+      const log = document.querySelector(".log");
+
+      window.Module = {
+        preRun: [
+          () => {
+            addRunDependency("load-idb");
+            FS.mkdir("/classicube");
+            FS.mount(IDBFS, {}, "/classicube");
+            FS.syncfs(true, (err) => {
+              assert(!err);
+              removeRunDependency("load-idb");
+            });
+          },
+        ],
+        locateFile(path, prefix) {
+          if (path === "/static/default.zip") {
+            return new URL("default.zip", location);
+          }
+
+          return prefix + path;
+        },
+        postRun: [],
+        arguments: ["steve"],
+        print: console.log,
+        printErr: console.error,
+        canvas: canvas,
+        postException: false,
+        setStatus(...text) {
+          if (this.postException) {
+            text.unshift("[post-exception status]");
+          }
+
+          log.textContent = text.join(" ");
+        },
+        totalDependencies: 0,
+        monitorRunDependencies(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? "Preparing... (" + (this.totalDependencies - left) + "/" + this.totalDependencies + ")" : "All downloads complete.");
+        },
+      };
+
+      if (parent !== window) {
+        const dupe = (event) => window.dispatchEvent(new event.constructor(event.type, Object.fromEntries(Object.getOwnPropertyNames(event.constructor.prototype).map((x) => [x, event[x]]))));
+
+        parent.addEventListener("keydown", dupe);
+        parent.addEventListener("keyup", dupe);
+      }
+
+      document.addEventListener("click", () => {
+        window.focus();
+        canvas.focus();
+      });
+
+      function resize() {
+        const box = canvas.getBoundingClientRect();
+        canvas.width = box.right - box.left;
+        canvas.height = box.bottom - box.top;
+      }
+
+      resize();
+
+      window.addEventListener("resize", () => {
+        resize();
+      });
+
+      Module.setStatus("Downloading...");
+
+      window.addEventListener("error", (err) => {
+        Module.setStatus("Exception thrown, see JavaScript console");
+        Module.postException = true;
+      });
+
+      /*XMLHttpRequest.prototype.open = new Proxy(XMLHttpRequest.prototype.open, {
+	apply(target, that, [ method, url, async, username, password ]){
+		url = new URL(url, location);
+		
+		if(url.origin != location.origin){
+			url = new URL('/service/gateway?url=' + encodeURIComponent(url), location);
+		}
+		
+		return Reflect.apply(target, that, [ method, url, async, username, password ]);
+	},
+});*/
+    </script>
+    <script src="game.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

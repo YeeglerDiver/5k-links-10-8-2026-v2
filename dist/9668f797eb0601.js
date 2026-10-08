@@ -1,0 +1,2 @@
+/* global Ultraviolet */
+self.__uv$config={prefix:"/86862f53edcaab/",encodeUrl:Ultraviolet.codec.xor.encode,decodeUrl:Ultraviolet.codec.xor.decode,handler:"/dist/2d069defe398a6.js",client:"/dist/f9dee9fe40d628.js",bundle:"/dist/f84b10d0eed54d.js",config:"/dist/9668f797eb0601.js",sw:"/dist/669abb686c9d53.js"};

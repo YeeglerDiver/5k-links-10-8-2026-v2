@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=345",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="JustFall.lol"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <base href="https://cdn.jsdelivr.net/gh/fork-so-the-site-i-take-wont-be-deleted/bulbasaurchat.github.io@main/games/justfalllol/">
+    <meta charset="utf-8" />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Just Fall</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <script>
+      Object.defineProperty(document, "URL", {
+        get() {
+          return "https://justfall.lol/";
+        },
+      });
+    </script>
+    <script src="mobileRedirect.js"></script>
+    <!-- Rise SDK -->
+    <script src="hb.loader.js"></script>
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
+
+    <link rel="stylesheet" href="style.css" />
+    <!-- ZONETAG - PLACE INTO HEAD SECTION OR RUN CODE AT STARTUP -->
+    <script>
+      (function (zonefile) {
+        var y = "cpmstarx";
+        var drutObj = (window[y] = window[y] || {});
+        function failCpmstarAPI() {
+          var failFn = function (o) {
+            o && typeof o === "object" && o.fail && o.fail();
+          };
+          drutObj && Array.isArray(drutObj.cmd) && drutObj.cmd.forEach(failFn) && (drutObj.cmd.length = 0);
+          window.cpmstarAPI = window["_" + zonefile] = failFn;
+        }
+        var rnd = Math.round(Math.random() * 999999);
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
+        s.onerror = failCpmstarAPI;
+        var proto = document.location.protocol;
+        var host = proto == "https:" || proto == "file:" ? "https://server" : "//cdn";
+        if (window.location.hash == "#cpmstarDev") host = "//dev.server";
+        if (window.location.hash == "#cpmstarStaging") host = "//staging.server";
+        s.src = host + ".cpmstar.com/cached/zonefiles/" + zonefile + ".js?rnd=" + rnd;
+        var s2 = document.getElementsByTagName("script")[0];
+        s2.parentNode.insertBefore(s, s2);
+        window.cpmstarAPI = function (o) {
+          (drutObj.cmd = drutObj.cmd || []).push(o);
+        };
+      })("627_49986_gameapi");
+    </script>
+    <!-- MIDROLL/INTERSTITIAL VIDEO API -->
+    <script src="rise.js"></script>
+  <!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+  <body>
+    <div id="gameContainer"></div>
+    <div id="loader">
+      <div class="spinner"></div>
+      <div class="progress">
+        <div class="full"></div>
+      </div>
+    </div>
+    <script src="fullscreen.js"></script>
+    <script id="unity-loader" src="UnityLoader.js"></script>
+    <script>
+      var gameJsonUrl = "WebGL.json"; //%gameJsonUrl
+      var urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("v")) {
+        gameJsonUrl = gameJsonUrl.replace(/[0-9][0-9]+/i, urlParams.get("v"));
+      }
+      var gameInstance = UnityLoader.instantiate("gameContainer", gameJsonUrl, { onProgress: UnityProgress });
+
+      function UnityProgress(gameInstance, progress) {
+        if (!gameInstance.Module) {
+          return;
+        }
+        const loader = document.querySelector("#loader");
+        if (!gameInstance.progress) {
+          const progress = document.querySelector("#loader .progress");
+          progress.style.display = "block";
+          gameInstance.progress = progress.querySelector(".full");
+          loader.querySelector(".spinner").style.display = "none";
+        }
+        gameInstance.progress.style.transform = `scaleX(${progress})`;
+        if (progress === 1 && !gameInstance.removeTimeout) {
+          loader.style.display = "none";
+          gameLoaded = true;
+        }
+      }
+
+      initializeFullscreenEvents();
+
+      injectAdByWindowSize();
+
+      document.addEventListener("visibilitychange", function () {
+        if (!gameInstance) return;
+
+        if (document.visibilityState == "hidden") {
+          gameInstance.SendMessage("FocusManager", "ApplicationFocusChangedWebCallback", 0);
+        } else {
+          gameInstance.SendMessage("FocusManager", "ApplicationFocusChangedWebCallback", 1);
+        }
+      });
+
+      window.addEventListener("resize", injectAdByWindowSize);
+
+      function injectAdByWindowSize() {
+        // Inject small ad if screen is small, or large ad if screen is large
+      }
+
+      function showAds() {
+        console.log("show ads");
+
+        document.getElementsByClassName("ad-rectangle-bottom")[0].style.display = "block";
+        document.getElementsByClassName("ad-leaderboard-bottom")[0].style.display = "block";
+        document.getElementById("adRectangleUpper").style.display = "block";
+
+        refresh();
+      }
+
+      function hideAds() {
+        console.log("hide ads");
+
+        document.getElementsByClassName("ad-rectangle-bottom")[0].style.display = "none";
+        document.getElementsByClassName("ad-leaderboard-bottom")[0].style.display = "none";
+        document.getElementById("adRectangleUpper").style.display = "none";
+      }
+
+      function refresh() {
+        if (document.getElementById("adRectangleBottom") != null && window.getComputedStyle(document.getElementsByClassName("ad-smallscreen")[0]).display != "none") {
+          cpmstarAPI({ kind: "adcmd", module: "POOL 84816", command: "refresh" });
+        }
+
+        if (document.getElementById("adLeaderboardBottom") != null && window.getComputedStyle(document.getElementsByClassName("ad-largescreen")[0]).display != "none") {
+          cpmstarAPI({ kind: "adcmd", module: "POOL 85075", command: "refresh" });
+        }
+
+        cpmstarAPI({ kind: "adcmd", module: "POOL 85074", command: "refresh" });
+
+        console.log("refresh ads");
+      }
+
+      window.onfocus = function () {
+        console.log("onfocus");
+        refresh();
+      };
+    </script>
+</body>
+</html>

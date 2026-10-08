@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang=en>
+
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=275",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Idle Dice"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/294/">
+    <meta charset=UTF-8>
+    <meta name=viewport content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <link rel=manifest href=manifest.json>
+    <link rel=icon href=assets/img/icon/icon32.png>
+    <link rel=apple-touch-icon sizes=32x32 href=assets/img/icon/icon32.png>
+    <link rel=apple-touch-icon sizes=64x64 href=assets/img/icon/icon64.png>
+    <link rel=apple-touch-icon sizes=96x96 href=assets/img/icon/icon96.png>
+    <link rel=apple-touch-icon sizes=128x128 href=assets/img/icon/icon128.png>
+    <link rel=apple-touch-icon sizes=168x168 href=assets/img/icon/icon168.png>
+    <link rel=apple-touch-icon sizes=192x192 href=assets/img/icon/icon192.png>
+    <link rel=apple-touch-icon sizes=256x256 href=assets/img/icon/icon256.png>
+    <link rel=apple-touch-icon sizes=512x512 href=assets/img/icon/icon512.png>
+    <title>Idle Dice</title>
+    <script src=cordova.js></script>
+    <script src=js/app.js></script>
+    <script src=js/sdk.js></script>
+    <style>
+        body {
+            margin: 0;
+            background: white;
+        }
+
+        canvas {
+            margin: auto;
+        }
+
+        #turn {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: white;
+            display: none;
+        }
+
+        #ui {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        #text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            font-family: Verdana monospace;
+            color: slategray;
+        }
+
+        #savePrompt {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+        }
+
+        #promptWindow {
+            color: white;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 25%;
+        }
+
+        #debug {
+            background-color: white;
+            position: absolute;
+        }
+
+        #save {
+            resize: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        @font-face {
+            font-family: 'regular';
+            src: url('assets/fonts/robotomono-thin-webfont.woff2') format('woff2'),
+                url('assets/fonts/robotomono-thin-webfont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'text';
+            src: url('assets/fonts/roboto-thin-webfont.woff2') format('woff2'),
+                url('assets/fonts/roboto-thin-webfont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'med';
+            src: url('assets/fonts/roboto-medium-webfont.woff2') format('woff2'),
+                url('assets/fonts/roboto-medium-webfont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+
+<body onload=init();>
+    <div style="font-family:regular; position:absolute; left:-10000px">Font Loaded</div>
+    <div style="font-family:text; position:absolute; left:-10000px">Font Loaded</div>
+    <div style="font-family:med; position:absolute; left:-10000px">Font Loaded</div>
+    <div id=debug></div>
+    <div id=savePrompt>
+        <div id=promptWindow><span id=saveInstruction>Copy this and save it somewhere.</span> <span id=loadInstruction>Paste the savedata here and click load.</span> <textarea id=save></textarea> <button id=copy>Copy</button> <button id=load>Load</button> <input id=file type=file> <button id=close>Close</button></div>
+    </div>
+    <div id=turn><span id=text>Turn your Device</span></div>
+</body>
+
+</html>

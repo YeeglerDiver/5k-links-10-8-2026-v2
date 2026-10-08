@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+	<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=304",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Find the Alien"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+		<base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/find-the-alien/">
+		<meta charset="utf-8" />
+		<meta id="viewport" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover" />
+		<script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="K_1xj9LcHfCW25Cs-ByeVQ"></script>
+		<script nonce="K_1xj9LcHfCW25Cs-ByeVQ">
+			var clickTag = "https://apps.apple.com/";
+			var iosLink = "https://apps.apple.com/";
+			var androidLink = "https://play.google.com/";
+
+			var userAgent = navigator.userAgent || navigator.vendor;
+			var clickTag = /android/i.test(userAgent) ? androidLink : iosLink;
+
+			var link = iosLink;
+			var link2 = androidLink;
+			var lp_url = clickTag;
+
+			////MOBVISTA FUNCTIONS
+			function gameStart() {
+				if (!window.app || !app.gameStart) {
+					setTimeout(gameStart, 250);
+					return;
+				}
+				app.gameStart();
+			}
+
+			function gameClose() {
+				if (!app) return;
+				app.gameClose();
+			}
+		</script>
+
+		<style></style>
+		<style type="text/css">
+			@keyframes pulse {
+				0% {
+					transform: scale(1, 1);
+				}
+
+				100% {
+					transform: scale(0.9, 0.9);
+				}
+			}
+
+			@keyframes twist {
+				0% {
+					transform: skewX(-10deg);
+				}
+
+				100% {
+					transform: skewX(10deg);
+				}
+			}
+
+			@keyframes jump {
+				0% {
+					transform: translateY(0);
+				}
+
+				100% {
+					transform: translateY(-10px);
+				}
+			}
+
+			@keyframes rotate {
+				0% {
+					transform: rotate(-4deg);
+				}
+
+				100% {
+					transform: rotate(4deg);
+				}
+			}
+
+			#modal {
+				z-index: 9999;
+			}
+
+			* {
+				padding: 0;
+				margin: 0;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+
+			#loading {
+				position: fixed;
+				margin: auto;
+				top: 0;
+				bottom: 0;
+				right: 0;
+				left: 0;
+				z-index: 999;
+			}
+
+			/*
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    background: #0eb1f7;
+    background: linear-gradient(180deg, #0eb1f7 0%, #095f85 50%);
+
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+}
+
+body,html{
+    touch-action: none
+}
+*/
+
+			body,
+			html {
+				position: absolute;
+				margin: 0;
+				padding: 0;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				overflow: hidden;
+				background: 0 0;
+
+				touch-action: none;
+			}
+
+			canvas {
+				position: fixed;
+				top: 0;
+				left: 0;
+			}
+
+			#ui {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 99;
+			}
+
+			.screen {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			.cover {
+				background: rgba(0, 0, 0, 0.5);
+			}
+
+			.center-absolute {
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				margin: auto;
+			}
+
+			.not-select {
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				user-select: none;
+			}
+
+			.hide {
+				visibility: hidden;
+				opacity: 0;
+				transition: opacity 1s, visiblility 1s;
+			}
+
+			.show {
+				visibility: visible;
+				opacity: 1;
+				transition: opacity 1s, visiblility 1s;
+			}
+
+			.simple-pulse {
+				animation-name: pulse;
+				animation-duration: 0.5s;
+				animation-iteration-count: infinite;
+				animation-direction: alternate;
+			}
+
+			#animation_container {
+				position: absolute;
+				margin: auto;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+			}
+
+			@keyframes alpha {
+				0% {
+					opacity: 1;
+				}
+
+				100% {
+					opacity: 0;
+				}
+			}
+
+			.info-text {
+				position: absolute;
+				text-align: center;
+				font-size: 40px;
+				font-family: ui-font;
+				width: 100%;
+
+				color: #d1445e;
+
+				animation-name: pulse;
+				animation-duration: 0.15s;
+				animation-iteration-count: infinite;
+				animation-direction: alternate;
+			}
+
+			.circle-bar {
+				position: absolute;
+				left: 100px;
+				top: 100px;
+				background: #ffffff;
+				width: 150px;
+				height: 150px;
+				z-index: 990;
+			}
+
+			@keyframes alpha2 {
+				0% {
+					opacity: 1;
+				}
+
+				100% {
+					opacity: 0;
+				}
+			}
+
+			#custom-preloader-pf {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: #333;
+				z-index: 99999;
+
+				display: flex;
+				align-items: center;
+				flex-direction: column;
+
+				justify-content: center;
+				justify-content: space-evenly;
+			}
+			/*TOP PART*/
+			.custom-preloader-item-top {
+				width: 50%;
+				max-height: 40%;
+				text-align: center;
+			}
+
+			.custom-preloader-item-top > * {
+				max-width: 100%;
+				max-height: 100%;
+			}
+
+			/*BOTTOM PART*/
+			.custom-preloader-item-bottom {
+				max-width: 40%;
+				max-height: 10%;
+				text-align: center;
+			}
+
+			.custom-preloader-item-bottom > * {
+				max-width: 100%;
+				max-height: 100%;
+			}
+
+			/* PF - LOGO */
+
+			@keyframes gear-turn {
+				from {
+					transform: rotate(0deg);
+				}
+				to {
+					transform: rotate(360deg);
+				}
+			}
+
+			@keyframes play-pulse {
+				0% {
+					transform: scale(1);
+				}
+				14% {
+					transform: scale(0.9);
+				}
+				28% {
+					transform: scale(1);
+				}
+				100% {
+					transform: scale(1);
+				}
+			}
+
+			#custom-pf-logo {
+				width: 250px;
+				height: 220px;
+
+				position: absolute;
+				left: 10px;
+				bottom: 10px;
+
+				transform-origin: bottom left;
+				transform: scale(0.15);
+			}
+
+			#custom-play {
+				position: absolute;
+				left: 0;
+				top: 15px;
+
+				animation-name: play-pulse;
+				animation-duration: 0.7s;
+				animation-iteration-count: infinite;
+				animation-timing-function: ease-in-out;
+			}
+
+			#custom-title {
+				position: absolute;
+				left: 300px;
+				top: 20px;
+
+				/* animation-name: play-pulse;
+    animation-duration: 0.7s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out; */
+			}
+
+			#custom-gear {
+				position: absolute;
+				left: 45px;
+
+				animation-name: gear-turn;
+				animation-duration: 2.66s;
+				animation-iteration-count: infinite;
+				animation-timing-function: linear;
+			}
+		</style>
+	<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+	<body>
+		<script type="text/javascript" src="main.js" nonce="K_1xj9LcHfCW25Cs-ByeVQ"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=307",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Pokey Ball"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/pokey-ball/">
+    <meta charset="utf-8">
+    <meta name="author" content="~">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover,minimal-ui" />
+    <script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="hCciCvTnzROJf19mJ0PmlQ"></script>
+    <script src="lib/VOODOO-H5SDK.youtube.js" nonce="hCciCvTnzROJf19mJ0PmlQ"></script>
+    <script nonce="hCciCvTnzROJf19mJ0PmlQ">
+        //# sourceMappingURL=usage.min.js.map
+        var prg = document.getElementById('progress-text');
+        window.notifyProgress = function (percent) {
+            if (prg) {
+                prg.textContent = Math.round(percent) + '%';
+            } else {
+                prg = document.getElementById('progress-text');
+            }
+        }
+
+        function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+            var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+            return {
+                width: srcWidth * ratio,
+                height: srcHeight * ratio
+            };
+        }
+
+        function onResize() {
+            var padding = 40;
+            var halfPadding = padding * 0.5;
+            var progressHeight = 120;
+            var size = 256;
+            var innerWidth = window.innerWidth - padding;
+            var innerHeight = window.innerHeight - padding;
+            var verticalCenter = 0.333;
+            var ratio = calculateAspectRatioFit(size, size, innerWidth, innerHeight - progressHeight);
+            var newWidth = Math.min(ratio.width, size);
+            var newHeight = Math.min(ratio.height, size);
+            var newTop = (innerHeight - newHeight) * verticalCenter;
+            // var el = document.getElementById('splash-screen');
+            // el.style.width = newWidth + 'px';
+            // el.style.height = newHeight + 'px';
+            // el.style.top = newTop + 'px';
+        }
+        window.addEventListener('DOMContentLoaded', (event) => {
+            window.addEventListener('resize', onResize);
+            onResize();
+            document.body.style.overflow = 'hidden';
+        });
+    </script>
+    <style>
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            -webkit-user-select: none;
+            overflow: hidden;
+            margin: 0 0 1px 0;
+            padding: 0;
+            background-color: #000;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            touch-action: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            cursor: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #three-container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            touch-action: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            cursor: auto;
+            position: absolute;
+            top: 0;
+            left: 0
+        }
+
+        #splash-screen {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            background: #000;
+            overflow: hidden;
+            display: none
+        }
+
+        #overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 1);
+            cursor: pointer;
+        }
+
+        .hidden {
+            visibility: hidden;
+            display: none;
+            opacity: 0;
+            transition: visibility 0s 0.4s ease-in, opacity 0.4s ease-in;
+        }
+
+        #top-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        #voodoo-logo {
+            position: absolute;
+            width: 70%;
+            max-width: 400px;
+            height: 100%;
+            /*left: 15%;*/
+            /*bottom: 50px;*/
+            bottom: 50px;
+            background-image: url("assets/voodoo.c6aff1c3.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: invert(1);
+            display: flex;
+            justify-content: center;
+        }
+
+        #progress-text {
+            text-align: center;
+            color: #fff;
+            font-size: 5.5vw;
+            font-family: 'system-ui', system-ui;
+            position: relative;
+            top: calc(50% + 60px);
+            filter: invert(1);
+        }
+    </style>
+<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+
+<body oncontextmenu="return false;">
+    <div id="three-container"></div>
+    <div id="container"></div>
+    <div id="splash-screen">
+        <div id="top-container">
+            <div id="overlay"></div>
+            <div id="voodoo-logo">
+                <div id="progress-text">0%</div>
+            </div>
+        </div>
+    </div>
+    <script defer="defer" src="code.js" nonce="hCciCvTnzROJf19mJ0PmlQ"></script>
+</body>
+
+</html>

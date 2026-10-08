@@ -1,0 +1,175 @@
+<html lang="en">
+<base href="https://cdn.jsdelivr.net/gh/bubbls/dosbox/">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=578",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Doom 2"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title></title>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: black;
+            color: #fedb1d;
+            overflow: hidden;
+        }
+        
+        #canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: auto;
+            height: 100%;
+            background: black;
+            padding: 0;
+            margin: 0;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            /*pointer-events:none;*/
+        }
+        
+        .emularity-splash-screen {
+            text-align: center;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 50%;
+            margin: 0;
+            box-sizing: border-box;
+            color: #000;
+        }
+    </style>
+<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+
+<body>
+    <canvas id="canvas" style="width: 50%; height: 50%; display: block; margin: 0 auto;" onClick="window.focus();" />
+    <script type="text/javascript" src="js/es6-promise.js"></script>
+    <script type="text/javascript" src="js/browserfs.min.js"></script>
+    <script type="text/javascript" src="js/loader.js"></script>
+    <!--<script src="../../../c/libs/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+    <script type="text/javascript">
+        function $_GET(param) {
+            var vars = {};
+            window.location.href.replace(location.hash, '').replace(
+                /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+                function(m, key, value) { // callback
+                    vars[key] = value !== undefined ? value : '';
+                }
+            );
+            if (param) {
+                return vars[param] ? vars[param] : null;
+            }
+            return vars;
+        }
+
+        var softs = {
+
+            DOOM2: {
+                file: 'softs/DOOM2.zip',
+                cmd: 'DOOM2/DOOM2.EXE',
+                pointer: true
+            },
+
+
+
+        }
+        var file = "DOOM2";
+        if ($_GET('soft') != null) {
+            if (softs[$_GET('soft')] != undefined) {
+                file = $_GET('soft')
+                    //parent.$notif('Loading '+$_GET('soft').replace(/_/g," ")+'.')
+            };
+        };
+        //
+        // DOS FILES
+        if (softs[file].machine == undefined) {
+            var dosbox = new Emulator(document.querySelector("#canvas"),
+                null,
+                new DosBoxLoader(DosBoxLoader.emulatorJS("js/dosbox-sync.js"),
+                    DosBoxLoader.locateAdditionalEmulatorJS(locateAdditionalFiles),
+                    DosBoxLoader.nativeResolution(640, 400),
+                    DosBoxLoader.mountZip("c",
+                        //DosBoxLoader.fetchFile("Software", "softs/" + softs[file].file)),
+                        DosBoxLoader.fetchFile("Software", softs[file].file)),
+                    DosBoxLoader.startExe(softs[file].cmd)));
+            dosbox.start({
+                waitAfterDownloading: false
+            });
+
+            function locateAdditionalFiles(filename) {
+                if (filename === "dosbox.html.mem") {
+                    return "js/dosbox-sync.mem";
+                }
+                return "js/" + filename;
+            }
+
+        }
+        //
+        // PC98 DOS FILES
+        if (softs[file].machine == 'PC98') {
+            var dosbox = new Emulator(document.querySelector("#canvas"),
+                null,
+                new PC98DosBoxLoader(PC98DosBoxLoader.emulatorJS("js/dosbox-x.js"),
+                    PC98DosBoxLoader.emulatorWASM("js/dosbox-x.wasm"),
+                    PC98DosBoxLoader.locateAdditionalEmulatorJS(locateAdditionalFiles),
+                    PC98DosBoxLoader.nativeResolution(640, 480),
+                    PC98DosBoxLoader.mountZip("c",
+                        PC98DosBoxLoader.fetchFile("Game File",
+                            "softs/" + softs[file].file)),
+                    PC98DosBoxLoader.mountZip("y",
+                        PC98DosBoxLoader.fetchFile("ROM File",
+                            "js/font.zip")),
+
+                    PC98DosBoxLoader.startExe(softs[file].cmd)))
+            dosbox.start({
+                waitAfterDownloading: true
+            });
+
+            function locateAdditionalFiles(filename) {
+                if (filename === "dosbox.html.mem") {
+                    return "js/dosbox-sync.mem";
+                }
+                return "js/" + filename;
+            }
+
+
+        }
+
+        if (softs[file].pointer == false) {
+            c = document.getElementById("canvas")
+            c.style.cursor = "none"
+        };
+    </script>
+</body>
+
+</html>

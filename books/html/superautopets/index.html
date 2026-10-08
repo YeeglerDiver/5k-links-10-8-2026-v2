@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+
+<!-- Mirrored from v6p9d9t4.ssl.hwcdn.net/html/7469925/Production WebGL/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 25 Mar 2023 01:22:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=964",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Superautopets"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/Production%20WebGL.loader.js"></script>
+
+    <title>Super Auto Pets</title>
+<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+
+<body>
+    <div id="custom-logo"></div>
+
+    <div id="custom-loader">
+        <div class="fill"></div>
+        <div class="label"></div>
+        <div class="help">
+            If the game isn't downloading or running properly, or try not using Chromium, Webkit, Presto, Gecko, Goanna, and Firefox based browsers.
+        </div>
+    </div>
+
+    <div id="gameContainer">
+        <canvas id="unity-canvas"></canvas>
+        <script>
+            var config = {
+				dataUrl: "Build/Production WebGL.data.gz",
+				frameworkUrl: "Build/Production WebGL.framework.js.gz",
+				codeUrl: "Build/Production WebGL.wasm.gz",
+				companyName: "Team Wood",
+				productName: "Super Auto Pets",
+				productVersion: "121",
+            };
+            var canvas = document.querySelector("#unity-canvas");
+            var loader = document.querySelector("#custom-loader");
+            var logo = document.querySelector("#custom-logo");
+            createUnityInstance(canvas, config, (progress) => UnityProgress(progress, loader, logo)).then(function(instance) {
+                var canvas = instance.Module.canvas;
+                var container = canvas.parentElement;
+
+                function onResize() {
+                    var w;
+                    var h;
+
+					if (scaleToFit) {
+						w = window.innerWidth;
+						h = window.innerHeight;
+
+						var r = 720 / 1280;
+
+						if (w * r > window.innerHeight) {
+							w = Math.min(w, Math.ceil(h / r));
+						}
+						h = Math.floor(w * r);
+					} else {
+						w = 1280;
+						h = 720;
+					}
+
+                    container.style.width = canvas.style.width = w + "px";
+                    container.style.height = canvas.style.height = h + "px";
+                    container.style.top = Math.floor((window.innerHeight - h) / 2) + "px";
+                    container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
+                }
+
+				var scaleToFit;
+				try {
+					scaleToFit = !!JSON.parse("{{{ SCALE_TO_FIT }}}");
+				} catch (e) {
+					scaleToFit = true;
+				}
+				window.addEventListener('resize', onResize);
+				onResize();
+            });
+        </script>
+    </div>
+
+    <script src="Build/updater.js"></script>
+</body>
+
+
+
+<!-- Mirrored from v6p9d9t4.ssl.hwcdn.net/html/7469925/Production WebGL/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 25 Mar 2023 01:22:35 GMT -->
+</html>

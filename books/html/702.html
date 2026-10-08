@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+<base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/702/">
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=677",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="JavascriptPS1"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+	<title>JavascriptPS1</title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+
+	<script type="text/javascript" src="base64.js"></script>
+	<script type="text/javascript" src="trace.js"></script>
+	<script type="text/javascript" src="utils.js"></script>
+
+	<script type="text/javascript" src="psx-core/core.js"></script>
+	<script type="text/javascript" src="psx-core/config.js"></script>
+
+	<script type="text/javascript" src="psx-renderers/webGlHQ.js"></script>
+
+	<script type="text/javascript" src="psx-core/memory.js"></script>
+	<script type="text/javascript" src="psx-core/enge.js"></script>
+	<script type="text/javascript" src="psx-core/cdrom.js"></script>
+	<script type="text/javascript" src="psx-core/recompiler.js"></script>
+	<script type="text/javascript" src="psx-core/directMemoryAccess.js"></script>
+	<script type="text/javascript" src="psx-core/geometryTransformEngine.js"></script>
+	<script type="text/javascript" src="psx-core/graphicsProcessingUnit.js"></script>
+	<script type="text/javascript" src="psx-core/macroBlockDecoder.js"></script>
+	<script type="text/javascript" src="psx-core/serialPorts.js"></script>
+	<script type="text/javascript" src="psx-core/soundProcessingUnit.js"></script>
+	<script type="text/javascript" src="psx-core/rootCounters.js"></script>
+	<script type="text/javascript" src="psx-core/gamepad.js"></script>
+
+	<script type="text/javascript" src="index.js"></script>
+
+<!-- Google Analytics -->
+
+
+
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        </head>
+
+<body onload="init();">
+    <input type="file" id="file_loader" style="position: relative; z-index: 9999"</input>
+    <header><span class="nobios">JavascriptPS1</span></header>
+	<canvas id="display"></canvas>
+	<nav>
+		<div id="file">
+			<label for="file-upload" class="custom-file-upload"></label>
+			<input id="file-upload" type="file" />
+		</div>
+		<!-- <div id="globe"></div> -->
+		<span></span>
+		<div id="gamepad"></div>
+		<div id="quality"></div>
+    </nav>
+
+</html>
