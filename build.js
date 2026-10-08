@@ -13,7 +13,7 @@ const repoName = process.env.GITHUB_REPOSITORY
   : "5k-links-10-8-2026-v2";
 const repoPrefix = `/${repoName}/`;
 
-// 1. Git LFS rules for deployment
+// 1. Git LFS rules
 const gitattributesContent = [
   "books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text",
   "books/html/fnafi3/* filter=lfs diff=lfs merge=lfs -text",
@@ -23,7 +23,7 @@ const gitattributesContent = [
 ].join("\n");
 fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
 
-// 2. Asset folders
+// 2. Copy directories
 const assetDirs = [
   "__rv",
   "books",
@@ -44,42 +44,39 @@ for (const dir of assetDirs) {
   }
 }
 
-// Ensure dist folder exists
+// 3. Mirror all JS and CSS bundles across dist_deploy/ and dist_deploy/dist/
 fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
 
-// Copy all root files into dist_deploy root AND mirror hashed files to dist_deploy/dist/
-for (const item of fs.readdirSync(process.cwd())) {
-  const full = path.join(process.cwd(), item);
-  if (fs.statSync(full).isFile() && !item.startsWith(".")) {
-    fs.copyFileSync(full, path.join(distDir, item));
-    if (item.endsWith(".js") || item.endsWith(".css")) {
-      fs.copyFileSync(full, path.join(distDir, "dist", item));
+function collectAndMirrorFiles(dir) {
+  for (const item of fs.readdirSync(dir)) {
+    const full = path.join(dir, item);
+    if (fs.statSync(full).isDirectory()) {
+      if (item !== "dist_deploy" && item !== ".git") {
+        collectAndMirrorFiles(full);
+      }
+    } else if (/\.(js|css|wasm|json)$/i.test(item)) {
+      // Place a copy at dist_deploy root
+      const rootTarget = path.join(distDir, item);
+      if (!fs.existsSync(rootTarget)) {
+        fs.copyFileSync(full, rootTarget);
+      }
+      // Place a copy inside dist_deploy/dist/
+      const distTarget = path.join(distDir, "dist", item);
+      if (!fs.existsSync(distTarget)) {
+        fs.copyFileSync(full, distTarget);
+      }
     }
   }
 }
 
-// Copy items inside __rv into both distDir and distDir/dist/
-if (fs.existsSync("__rv")) {
-  for (const item of fs.readdirSync("__rv")) {
-    const src = path.join("__rv", item);
-    if (fs.statSync(src).isFile()) {
-      fs.copyFileSync(src, path.join(distDir, item));
-      fs.copyFileSync(src, path.join(distDir, "dist", item));
-    }
-  }
+collectAndMirrorFiles(process.cwd());
+
+// Copy sw.js to root
+if (fs.existsSync("sw.js")) {
+  fs.copyFileSync("sw.js", path.join(distDir, "sw.js"));
 }
 
-// Also ensure anything inside repository dist/ is accessible at root
-if (fs.existsSync("dist")) {
-  for (const item of fs.readdirSync("dist")) {
-    const src = path.join("dist", item);
-    if (fs.statSync(src).isFile()) {
-      fs.copyFileSync(src, path.join(distDir, item));
-    }
-  }
-}
-
-// 3. Recursive path replacement for all JS, JSON, CSS, and HTML
+// 4. Global string replacement to patch hardcoded domain paths
 function patchFile(filePath) {
   let content = fs.readFileSync(filePath, "utf8");
   const updated = content
@@ -89,6 +86,7 @@ function patchFile(filePath) {
     .replace(/(['"])\/__rv\//g, `$1${repoPrefix}__rv/`)
     .replace(/(['"])\/status\//g, `$1${repoPrefix}status/`)
     .replace(/(['"])\/data\//g, `$1${repoPrefix}data/`)
+    .replace(/(['"])\/suggest/g, `$1${repoPrefix}suggest`)
     .replace(/(['"])\/sw\.js(['"])/g, `$1${repoPrefix}sw.js$2`);
 
   if (updated !== content) {
@@ -109,7 +107,7 @@ function walkAndPatch(dir) {
 }
 walkAndPatch(distDir);
 
-// 4. Base HTML setup with correct service worker scope
+// 5. Setup base template
 if (!fs.existsSync("index.html")) {
   console.error("Error: index.html not found!");
   process.exit(1);
@@ -117,7 +115,6 @@ if (!fs.existsSync("index.html")) {
 let baseHtml = fs.readFileSync("index.html", "utf8");
 baseHtml = baseHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
 
-// Use the exact repoPrefix for the Service Worker scope
 const swInitScript = `
     <base href="${repoPrefix}">
     <script>
@@ -132,10 +129,7 @@ if (!baseHtml.includes("<base ")) {
   baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n${swInitScript}`);
 }
 
-// Write SPA 404 fallback
-fs.writeFileSync(path.join(distDir, "404.html"), baseHtml);
-
-// 5. Generate 5,000 unique physical directories containing index.html
+// 6. Generate 5,000 unique paths
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -168,7 +162,7 @@ for (const nestedPath of uniquePaths) {
   masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
 }
 
-// 6. Root Directory Dashboard Index
+// 7. Directory Registry Dashboard
 const masterIndexHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -219,4 +213,4 @@ const masterIndexHtml = `<!DOCTYPE html>
 </html>`;
 
 fs.writeFileSync(path.join(distDir, "index.html"), masterIndexHtml);
-console.log("Successfully generated all 5,000 directories and mapped assets.");
+console.log("Assets mirrored and paths patched successfully.");
