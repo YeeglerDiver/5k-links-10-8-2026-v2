@@ -13,7 +13,7 @@ const repoName = process.env.GITHUB_REPOSITORY
   : "5k-links-10-8-2026-v2";
 const repoPrefix = `/${repoName}/`;
 
-// 1. Git LFS attributes
+// 1. Git LFS rules for deployment
 const gitattributesContent = [
   "books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text",
   "books/html/fnafi3/* filter=lfs diff=lfs merge=lfs -text",
@@ -23,7 +23,7 @@ const gitattributesContent = [
 ].join("\n");
 fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
 
-// 2. Copy directories
+// 2. Asset folders
 const assetDirs = [
   "__rv",
   "books",
@@ -44,61 +44,98 @@ for (const dir of assetDirs) {
   }
 }
 
-// 3. Copy root files and scripts
+// Ensure dist folder exists
+fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
+
+// Copy all root files into dist_deploy root AND mirror hashed files to dist_deploy/dist/
 for (const item of fs.readdirSync(process.cwd())) {
   const full = path.join(process.cwd(), item);
   if (fs.statSync(full).isFile() && !item.startsWith(".")) {
     fs.copyFileSync(full, path.join(distDir, item));
+    if (item.endsWith(".js") || item.endsWith(".css")) {
+      fs.copyFileSync(full, path.join(distDir, "dist", item));
+    }
   }
 }
 
-// Mirror to dist/
-fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
+// Copy items inside __rv into both distDir and distDir/dist/
 if (fs.existsSync("__rv")) {
   for (const item of fs.readdirSync("__rv")) {
     const src = path.join("__rv", item);
     if (fs.statSync(src).isFile()) {
+      fs.copyFileSync(src, path.join(distDir, item));
       fs.copyFileSync(src, path.join(distDir, "dist", item));
     }
   }
 }
 
-// 4. Global string replacement across assets for repo prefix
-function patchPaths(dir) {
-  for (const item of fs.readdirSync(dir)) {
-    const full = path.join(dir, item);
-    if (fs.statSync(full).isDirectory()) {
-      if (item !== ".git") patchPaths(full);
-    } else if (/\.(js|json|css|webmanifest|html)$/i.test(item)) {
-      let content = fs.readFileSync(full, "utf8");
-      let updated = content
-        .replace(/(['"])\/books\//g, `$1${repoPrefix}books/`)
-        .replace(/(['"])\/dist\//g, `$1${repoPrefix}dist/`)
-        .replace(/(['"])\/icons\//g, `$1${repoPrefix}icons/`)
-        .replace(/(['"])\/__rv\//g, `$1${repoPrefix}__rv/`)
-        .replace(/(['"])\/status\//g, `$1${repoPrefix}status/`)
-        .replace(/(['"])\/data\//g, `$1${repoPrefix}data/`)
-        .replace(/(['"])\/sw\.js(['"])/g, `$1${repoPrefix}sw.js$2`);
-
-      if (updated !== content) {
-        fs.writeFileSync(full, updated, "utf8");
-      }
+// Also ensure anything inside repository dist/ is accessible at root
+if (fs.existsSync("dist")) {
+  for (const item of fs.readdirSync("dist")) {
+    const src = path.join("dist", item);
+    if (fs.statSync(src).isFile()) {
+      fs.copyFileSync(src, path.join(distDir, item));
     }
   }
 }
-patchPaths(distDir);
 
-// 5. Prepare the SPA app template (injected into index.html & 404.html)
-let appHtml = fs.readFileSync("index.html", "utf8");
-appHtml = appHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
-if (!appHtml.includes("<base ")) {
-  appHtml = appHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
+// 3. Recursive path replacement for all JS, JSON, CSS, and HTML
+function patchFile(filePath) {
+  let content = fs.readFileSync(filePath, "utf8");
+  const updated = content
+    .replace(/(['"])\/books\//g, `$1${repoPrefix}books/`)
+    .replace(/(['"])\/dist\//g, `$1${repoPrefix}dist/`)
+    .replace(/(['"])\/icons\//g, `$1${repoPrefix}icons/`)
+    .replace(/(['"])\/__rv\//g, `$1${repoPrefix}__rv/`)
+    .replace(/(['"])\/status\//g, `$1${repoPrefix}status/`)
+    .replace(/(['"])\/data\//g, `$1${repoPrefix}data/`)
+    .replace(/(['"])\/sw\.js(['"])/g, `$1${repoPrefix}sw.js$2`);
+
+  if (updated !== content) {
+    fs.writeFileSync(filePath, updated, "utf8");
+  }
 }
 
-// Write 404.html so all 5,000 virtual paths route through the single app instance
-fs.writeFileSync(path.join(distDir, "404.html"), appHtml);
+function walkAndPatch(dir) {
+  for (const item of fs.readdirSync(dir)) {
+    if (item === ".git") continue;
+    const full = path.join(dir, item);
+    if (fs.statSync(full).isDirectory()) {
+      walkAndPatch(full);
+    } else if (/\.(js|json|css|webmanifest|html)$/i.test(item)) {
+      patchFile(full);
+    }
+  }
+}
+walkAndPatch(distDir);
 
-// 6. Generate 5,000 unique URLs
+// 4. Base HTML setup with correct service worker scope
+if (!fs.existsSync("index.html")) {
+  console.error("Error: index.html not found!");
+  process.exit(1);
+}
+let baseHtml = fs.readFileSync("index.html", "utf8");
+baseHtml = baseHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
+
+// Use the exact repoPrefix for the Service Worker scope
+const swInitScript = `
+    <base href="${repoPrefix}">
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("${repoPrefix}sw.js", { scope: "${repoPrefix}" })
+          .catch(() => {});
+      }
+    </script>
+`;
+
+if (!baseHtml.includes("<base ")) {
+  baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n${swInitScript}`);
+}
+
+// Write SPA 404 fallback
+fs.writeFileSync(path.join(distDir, "404.html"), baseHtml);
+
+// 5. Generate 5,000 unique physical directories containing index.html
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -122,12 +159,17 @@ while (uniquePaths.size < TOTAL_PAGES) {
 }
 
 let masterLinksHtml = "";
-for (const p of uniquePaths) {
-  masterLinksHtml += `<a class="card" href="./${p}/">${p}</a>\n`;
+
+for (const nestedPath of uniquePaths) {
+  const folderPath = path.join(distDir, nestedPath);
+  fs.mkdirSync(folderPath, { recursive: true });
+
+  fs.writeFileSync(path.join(folderPath, "index.html"), baseHtml);
+  masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
 }
 
-// 7. Directory Registry (saved as index.html so the root URL shows all links)
-const registryHtml = `<!DOCTYPE html>
+// 6. Root Directory Dashboard Index
+const masterIndexHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -161,7 +203,7 @@ const registryHtml = `<!DOCTYPE html>
 <body>
   <header>
     <h1>Directory Index</h1>
-    <p>5,000 Nested Virtual Endpoints</p>
+    <p>5,000 Nested Endpoints</p>
     <input type="text" id="filter" class="search-box" placeholder="Quick find path..." autocomplete="off" />
   </header>
   <main class="grid" id="link-grid">${masterLinksHtml}</main>
@@ -176,5 +218,5 @@ const registryHtml = `<!DOCTYPE html>
 </body>
 </html>`;
 
-fs.writeFileSync(path.join(distDir, "index.html"), registryHtml);
-console.log("SPA 404 router & registry built successfully.");
+fs.writeFileSync(path.join(distDir, "index.html"), masterIndexHtml);
+console.log("Successfully generated all 5,000 directories and mapped assets.");
