@@ -13,7 +13,17 @@ const repoName = process.env.GITHUB_REPOSITORY
   : "5k-links-10-8-2026-v2";
 const repoPrefix = `/${repoName}/`;
 
-// 1. Copy asset folders
+// 1. Git LFS attributes
+const gitattributesContent = [
+  "books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text",
+  "books/html/fnafi3/* filter=lfs diff=lfs merge=lfs -text",
+  "*.zip filter=lfs diff=lfs merge=lfs -text",
+  "*.wasm filter=lfs diff=lfs merge=lfs -text",
+  ""
+].join("\n");
+fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
+
+// 2. Copy directories
 const assetDirs = [
   "__rv",
   "books",
@@ -34,82 +44,76 @@ for (const dir of assetDirs) {
   }
 }
 
-// 2. Copy root files
-const rootFiles = ["manifest.webmanifest", "sw.js"];
-for (const file of rootFiles) {
-  if (fs.existsSync(file)) {
-    fs.copyFileSync(file, path.join(distDir, file));
-  }
-}
-
-// Copy extra .js and .css files to dist_deploy root and dist_deploy/dist/
-fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
+// 3. Copy root files and scripts
 for (const item of fs.readdirSync(process.cwd())) {
-  if (item.endsWith(".js") || item.endsWith(".css")) {
-    fs.copyFileSync(item, path.join(distDir, item));
-    fs.copyFileSync(item, path.join(distDir, "dist", item));
+  const full = path.join(process.cwd(), item);
+  if (fs.statSync(full).isFile() && !item.startsWith(".")) {
+    fs.copyFileSync(full, path.join(distDir, item));
   }
 }
 
-// 3. Patch hardcoded paths inside all copied JS and JSON bundles
-function patchPathsInDir(directory) {
-  for (const item of fs.readdirSync(directory)) {
-    const fullPath = path.join(directory, item);
-    const stat = fs.statSync(fullPath);
-    if (stat.isDirectory()) {
-      patchPathsInDir(fullPath);
-    } else if (/\.(js|json|css|webmanifest)$/i.test(item)) {
-      let content = fs.readFileSync(fullPath, "utf8");
-      // Replace hardcoded root references with the repo prefix
-      const updated = content
+// Mirror to dist/
+fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
+if (fs.existsSync("__rv")) {
+  for (const item of fs.readdirSync("__rv")) {
+    const src = path.join("__rv", item);
+    if (fs.statSync(src).isFile()) {
+      fs.copyFileSync(src, path.join(distDir, "dist", item));
+    }
+  }
+}
+
+// 4. Global string replacement across assets for repo prefix
+function patchPaths(dir) {
+  for (const item of fs.readdirSync(dir)) {
+    const full = path.join(dir, item);
+    if (fs.statSync(full).isDirectory()) {
+      if (item !== ".git") patchPaths(full);
+    } else if (/\.(js|json|css|webmanifest|html)$/i.test(item)) {
+      let content = fs.readFileSync(full, "utf8");
+      let updated = content
         .replace(/(['"])\/books\//g, `$1${repoPrefix}books/`)
         .replace(/(['"])\/dist\//g, `$1${repoPrefix}dist/`)
         .replace(/(['"])\/icons\//g, `$1${repoPrefix}icons/`)
         .replace(/(['"])\/__rv\//g, `$1${repoPrefix}__rv/`)
         .replace(/(['"])\/status\//g, `$1${repoPrefix}status/`)
+        .replace(/(['"])\/data\//g, `$1${repoPrefix}data/`)
         .replace(/(['"])\/sw\.js(['"])/g, `$1${repoPrefix}sw.js$2`);
 
       if (updated !== content) {
-        fs.writeFileSync(fullPath, updated, "utf8");
+        fs.writeFileSync(full, updated, "utf8");
       }
     }
   }
 }
+patchPaths(distDir);
 
-patchPathsInDir(distDir);
-
-// 4. Base HTML setup
-if (!fs.existsSync("index.html")) {
-  console.error("Error: index.html not found!");
-  process.exit(1);
-}
-let baseHtml = fs.readFileSync("index.html", "utf8");
-baseHtml = baseHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
-
-if (!baseHtml.includes("<base ")) {
-  baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
+// 5. Prepare the SPA app template (injected into index.html & 404.html)
+let appHtml = fs.readFileSync("index.html", "utf8");
+appHtml = appHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
+if (!appHtml.includes("<base ")) {
+  appHtml = appHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
 }
 
-// 5. Generate 5,000 unique paths
+// Write 404.html so all 5,000 virtual paths route through the single app instance
+fs.writeFileSync(path.join(distDir, "404.html"), appHtml);
+
+// 6. Generate 5,000 unique URLs
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 function getRandomSegment(minLen = 4, maxLen = 10) {
-  const length = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
-  let segment = "";
-  for (let i = 0; i < length; i++) {
-    segment += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return segment;
+  const len = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
+  let seg = "";
+  for (let i = 0; i < len; i++) seg += chars.charAt(Math.floor(Math.random() * chars.length));
+  return seg;
 }
 
 function getNestedPath(minSegments = 2, maxSegments = 4) {
   const depth = Math.floor(Math.random() * (maxSegments - minSegments + 1)) + minSegments;
-  const segments = [];
-  for (let i = 0; i < depth; i++) {
-    segments.push(getRandomSegment(4, 10));
-  }
-  return segments.join("/");
+  const segs = [];
+  for (let i = 0; i < depth; i++) segs.push(getRandomSegment(4, 10));
+  return segs.join("/");
 }
 
 const uniquePaths = new Set();
@@ -118,17 +122,12 @@ while (uniquePaths.size < TOTAL_PAGES) {
 }
 
 let masterLinksHtml = "";
-
-for (const nestedPath of uniquePaths) {
-  const folderPath = path.join(distDir, nestedPath);
-  fs.mkdirSync(folderPath, { recursive: true });
-
-  fs.writeFileSync(path.join(folderPath, "index.html"), baseHtml);
-  masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
+for (const p of uniquePaths) {
+  masterLinksHtml += `<a class="card" href="./${p}/">${p}</a>\n`;
 }
 
-// 6. Directory Index
-const masterIndexHtml = `<!DOCTYPE html>
+// 7. Directory Registry (saved as index.html so the root URL shows all links)
+const registryHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -137,13 +136,9 @@ const masterIndexHtml = `<!DOCTYPE html>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #0d1117;
-      color: #c9d1d9;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: #0d1117; color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 40px 20px; display: flex; flex-direction: column; align-items: center;
     }
     header { text-align: center; margin-bottom: 28px; max-width: 650px; width: 100%; }
     h1 { font-size: 28px; font-weight: 700; color: #f0f6fc; margin-bottom: 8px; }
@@ -166,7 +161,7 @@ const masterIndexHtml = `<!DOCTYPE html>
 <body>
   <header>
     <h1>Directory Index</h1>
-    <p>5,000 Nested Pages</p>
+    <p>5,000 Nested Virtual Endpoints</p>
     <input type="text" id="filter" class="search-box" placeholder="Quick find path..." autocomplete="off" />
   </header>
   <main class="grid" id="link-grid">${masterLinksHtml}</main>
@@ -175,13 +170,11 @@ const masterIndexHtml = `<!DOCTYPE html>
     const links = document.querySelectorAll(".card");
     filter.addEventListener("input", (e) => {
       const term = e.target.value.toLowerCase().trim();
-      links.forEach(card => {
-        card.classList.toggle("hidden", !card.textContent.toLowerCase().includes(term));
-      });
+      links.forEach(card => card.classList.toggle("hidden", !card.textContent.toLowerCase().includes(term)));
     });
   </script>
 </body>
 </html>`;
 
-fs.writeFileSync(path.join(distDir, "index.html"), masterIndexHtml);
-console.log("Build complete with path patching applied.");
+fs.writeFileSync(path.join(distDir, "index.html"), registryHtml);
+console.log("SPA 404 router & registry built successfully.");
