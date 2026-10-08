@@ -28,7 +28,7 @@ jobs:
         run: |
           git lfs install
 
-      - name: Build and Distribute 5,000 Nested Pages with LFS
+      - name: Build 5,000 Nested Pages with Path Fixes
         run: |
           node -e '
           const fs = require("fs");
@@ -41,43 +41,52 @@ jobs:
           fs.mkdirSync(distDir, { recursive: true });
           fs.writeFileSync(path.join(distDir, ".nojekyll"), "");
 
-          // Configure Git LFS tracking inside the deploy directory
-          // Tracks large files like .html bundles over standard sizes via LFS
+          // 1. Git LFS rules for deployment
           const gitattributesContent = `books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text\nbooks/html/fnafi3/* filter=lfs diff=lfs merge=lfs -text\n*.zip filter=lfs diff=lfs merge=lfs -text\n*.wasm filter=lfs diff=lfs merge=lfs -text\n`;
           fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
 
-          // Copy all files and directories completely (no filtering)
+          // 2. Copy all directories and files
           const assetFiles = ["manifest.webmanifest", "sw.js"];
           const assetDirs = ["__rv", "books", "data", "help", "icons", "linux", "os", "reviews", "status", "wallpapers"];
 
           for (const file of assetFiles) {
-            if (fs.existsSync(file)) {
-              fs.copyFileSync(file, path.join(distDir, file));
-            }
+            if (fs.existsSync(file)) fs.copyFileSync(file, path.join(distDir, file));
           }
 
           for (const dir of assetDirs) {
-            if (fs.existsSync(dir)) {
-              fs.cpSync(dir, path.join(distDir, dir), { recursive: true });
+            if (fs.existsSync(dir)) fs.cpSync(dir, path.join(distDir, dir), { recursive: true });
+          }
+
+          // Copy scripts inside __rv directly to distDir root so root lookups find them
+          if (fs.existsSync("__rv")) {
+            for (const item of fs.readdirSync("__rv")) {
+              const srcItem = path.join("__rv", item);
+              const destItem = path.join(distDir, item);
+              if (fs.statSync(srcItem).isFile()) {
+                fs.copyFileSync(srcItem, destItem);
+              }
             }
           }
 
+          // 3. Read template index.html and fix absolute slash paths
           if (!fs.existsSync("index.html")) {
             console.error("Error: index.html not found!");
             process.exit(1);
           }
-          let baseIndexHtml = fs.readFileSync("index.html", "utf8");
+          let baseHtml = fs.readFileSync("index.html", "utf8");
 
-          const repoName = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split("/")[1] : "";
-          const baseHref = repoName ? `/${repoName}/` : "/";
+          const repoName = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split("/")[1] : "5k-links-10-8-2026-v2";
+          const repoPrefix = `/${repoName}/`;
 
-          let templateWithBase = baseIndexHtml;
-          if (!templateWithBase.includes("<base ")) {
-            templateWithBase = templateWithBase.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${baseHref}">`);
+          // Convert "/manifest.webmanifest" -> "/5k-links-10-8-2026-v2/manifest.webmanifest"
+          baseHtml = baseHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
+
+          // Ensure base tag is present
+          if (!baseHtml.includes("<base ")) {
+            baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
           }
 
-          fs.writeFileSync(path.join(distDir, "index.html"), templateWithBase);
-
+          // 4. Generate 5,000 unique paths
           const TOTAL_PAGES = 5000;
           const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -106,14 +115,16 @@ jobs:
 
           let masterLinksHtml = "";
 
+          // Write each of the 5,000 subfolder pages
           for (const nestedPath of uniquePaths) {
             const folderPath = path.join(distDir, nestedPath);
             fs.mkdirSync(folderPath, { recursive: true });
 
-            fs.writeFileSync(path.join(folderPath, "index.html"), templateWithBase);
+            fs.writeFileSync(path.join(folderPath, "index.html"), baseHtml);
             masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
           }
 
+          // 5. Main landing page: displays the 5,000 links
           const masterIndexHtml = `<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -169,7 +180,8 @@ jobs:
           </body>
           </html>`;
 
-          fs.writeFileSync(path.join(distDir, "registry.html"), masterIndexHtml);
+          // This makes the main URL display the 5k links directory directly
+          fs.writeFileSync(path.join(distDir, "index.html"), masterIndexHtml);
           '
 
       - name: Deploy to GitHub Pages
