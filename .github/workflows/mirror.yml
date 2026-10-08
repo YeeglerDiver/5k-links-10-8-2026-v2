@@ -1,4 +1,4 @@
-name: Scrape and Push Exact Assets Directly to Root
+name: Scrape and Push Exact Assets Directly to Root (Git LFS)
 
 on:
   workflow_dispatch:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Fetch Exact Discovered Production Assets
         run: |
@@ -26,7 +28,7 @@ jobs:
           wget -q -nc -x -nH "$BASE/data/apps.json" || true
           wget -q -nc -x -nH "$BASE/books/books.json" || true
 
-          # 2. Download all exact dist bundles shown in the DevTools sources
+          # 2. Download verified production dist bundles
           echo "Fetching verified production dist bundles..."
           mkdir -p dist
           FILES=(
@@ -48,7 +50,7 @@ jobs:
             wget -q -nc -x -nH "$BASE/$file" || true
           done
 
-          # 3. Download wallpapers and core app icons
+          # 3. Download visual assets
           echo "Fetching visual assets..."
           mkdir -p wallpapers icons data/img/apps
           wget -q -nc -x -nH "$BASE/wallpapers/nightfall.webp" || true
@@ -88,14 +90,28 @@ jobs:
           echo '{"version":"1.0.0"}' > __rv/version
           echo '{"status":"ok"}' > status/ping
 
-      - name: Commit and Push Directly to Root
+      - name: Track Large Files and Push with Git LFS
         run: |
+          # Initialize Git LFS on the runner
+          git lfs install
+
+          # Find any file over 50MB and add it to Git LFS tracking
+          find . -type f -size +50M -not -path '*/.*' | while read -r large_file; do
+            clean_name=$(echo "$large_file" | sed 's|^\./||')
+            echo "Tracking large file via LFS: $clean_name"
+            git lfs track "$clean_name"
+          done
+
+          # Stage .gitattributes first so LFS rules take effect
+          git add .gitattributes
+
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
+
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Add full site production assets to root"
-            git push
+            git commit -m "Scrape and store full site assets with Git LFS"
+            git push origin main
           fi
