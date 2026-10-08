@@ -18,48 +18,46 @@ jobs:
         run: |
           BASE="https://ixl.com.pulsaudio.ro"
 
-          # 1. Fetch core configuration files into repo root
           echo "Fetching primary files..."
-          wget -q -nc -x -nH "$BASE/index.html" || true
-          wget -q -nc -x -nH "$BASE/manifest.webmanifest" || true
-          wget -q -nc -x -nH "$BASE/sw.js" || true
-          wget -q -nc -x -nH "$BASE/data/apps.json" || true
-          wget -q -nc -x -nH "$BASE/books/books.json" || true
+          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/index.html" || true
+          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/manifest.webmanifest" || true
+          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/sw.js" || true
+          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/data/apps.json" || true
+          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/books/books.json" || true
 
-          # 2. Extract catalog file targets directly from apps.json and books.json
-          echo "Extracting entries from catalogs..."
+          echo "Extracting catalogue targets..."
+          mkdir -p target_lists
+          > target_lists/urls.txt
+
           if [ -f "data/apps.json" ]; then
-            grep -o -E '[a-zA-Z0-9_\-\./]+\.(html|png|webp|jpg|js|css|json)' data/apps.json | sort -u | while read -r item; do
-              clean=$(echo "$item" | sed 's|^/||')
-              wget -q -nc -x -nH "$BASE/$clean" || true
-            done
+            grep -o -E '[a-zA-Z0-9_\-\./]+\.(html|png|webp|jpg|js|css|json)' data/apps.json \
+              | sed 's|^/||' >> target_lists/urls.txt
           fi
 
           if [ -f "books/books.json" ]; then
-            grep -o -E '[a-zA-Z0-9_\-\./]+\.(html|png|webp|jpg|json)' books/books.json | sort -u | while read -r item; do
-              clean=$(echo "$item" | sed 's|^/||')
-              wget -q -nc -x -nH "$BASE/$clean" || true
-            done
+            grep -o -E '[a-zA-Z0-9_\-\./]+\.(html|png|webp|jpg|json)' books/books.json \
+              | sed 's|^/||' >> target_lists/urls.txt
           fi
 
-          # 3. Multi-pass discovery: scan all downloaded JS/HTML/CSS for nested dependencies
-          echo "Beginning multi-pass asset extraction..."
-          for round in 1 2 3; do
-            echo "--- Scan Round $round ---"
-            find . -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -not -path '*/.*' \
-              -exec grep -o -E '([a-zA-Z0-9_\-\./]+)\.(js|css|json|wasm|data|png|jpg|jpeg|webp|svg|webm|mp3|ogg|wav)' {} + \
-              | awk -F: '{print $2}' \
-              | sed -e 's/^[ \t]*//' -e "s/[\"']//g" -e 's|^/||' \
-              | grep -v -E '^(http|https|//)' \
-              | sort -u | while read -r asset; do
-                if [ ! -f "$asset" ]; then
-                  wget -q -nc -x -nH "$BASE/$asset" || true
-                fi
-              done
-          done
+          sort -u target_lists/urls.txt -o target_lists/urls.txt
 
-          # 4. Fallback route handlers for Single Page Application navigation
-          echo "Setting up local fallback directories..."
+          echo "Downloading $(wc -l < target_lists/urls.txt) catalogue assets in parallel..."
+          cat target_lists/urls.txt | xargs -n 1 -P 16 -I {} wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/{}" || true
+
+          echo "Scanning JS, HTML, and CSS for nested assets..."
+          find . -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -not -path '*/.*' \
+            -exec grep -o -E '([a-zA-Z0-9_\-\./]+)\.(js|css|json|wasm|data|png|jpg|jpeg|webp|svg|webm|mp3|ogg|wav)' {} + \
+            | awk -F: '{print $2}' \
+            | sed -e 's/^[ \t]*//' -e "s/[\"']//g" -e 's|^/||' \
+            | grep -v -E '^(http|https|//)' \
+            | sort -u > target_lists/nested.txt
+
+          echo "Downloading $(wc -l < target_lists/nested.txt) nested assets in parallel..."
+          cat target_lists/nested.txt | xargs -n 1 -P 16 -I {} wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/{}" || true
+
+          rm -rf target_lists
+
+          # Setup local client routing stubs
           for route in os reviews linux help; do
             mkdir -p "$route"
             [ -f index.html ] && cp index.html "$route/index.html"
