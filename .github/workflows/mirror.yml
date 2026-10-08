@@ -1,4 +1,4 @@
-name: Scrape Assets Directly to Repo Root
+name: Scrape and Push Exact Assets Directly to Root
 
 on:
   workflow_dispatch:
@@ -14,18 +14,52 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Scrape and Discover Assets Directly in Root
+      - name: Fetch Exact Discovered Production Assets
         run: |
           BASE="https://ixl.com.pulsaudio.ro"
 
-          echo "Fetching primary files..."
-          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/index.html" || true
-          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/manifest.webmanifest" || true
-          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/sw.js" || true
-          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/data/apps.json" || true
-          wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/books/books.json" || true
+          # 1. Download core shell, manifest, and service worker
+          echo "Fetching core entrypoints..."
+          wget -q -nc -x -nH "$BASE/index.html" || true
+          wget -q -nc -x -nH "$BASE/manifest.webmanifest" || true
+          wget -q -nc -x -nH "$BASE/sw.js" || true
+          wget -q -nc -x -nH "$BASE/data/apps.json" || true
+          wget -q -nc -x -nH "$BASE/books/books.json" || true
 
-          echo "Extracting catalogue targets..."
+          # 2. Download all exact dist bundles shown in the DevTools sources
+          echo "Fetching verified production dist bundles..."
+          mkdir -p dist
+          FILES=(
+            "dist/9a798f66f2e03e.js"
+            "dist/3889b96ea88650.js"
+            "dist/66236a7092d278.js"
+            "dist/c1fd2a6a0c7365.js"
+            "dist/ca6099c23c59cd.js"
+            "dist/facda17da395a2.js"
+            "dist/0f7a354189db53.js"
+            "dist/8c0ecdafe638c8.js"
+            "dist/669abb686c9d53.js"
+            "dist/9668f797eb0601.js"
+            "dist/d7feb34116dbd4.js"
+            "dist/f84b10d0eed54d.js"
+            "dist/eb7576df1f1bc2.css"
+          )
+          for file in "${FILES[@]}"; do
+            wget -q -nc -x -nH "$BASE/$file" || true
+          done
+
+          # 3. Download wallpapers and core app icons
+          echo "Fetching visual assets..."
+          mkdir -p wallpapers icons data/img/apps
+          wget -q -nc -x -nH "$BASE/wallpapers/nightfall.webp" || true
+          wget -q -nc -x -nH "$BASE/wallpapers/aurora.webp" || true
+          wget -q -nc -x -nH "$BASE/icons/favicon-32.png" || true
+          wget -q -nc -x -nH "$BASE/icons/favicon.svg" || true
+          wget -q -nc -x -nH "$BASE/icons/icon-192.png" || true
+          wget -q -nc -x -nH "$BASE/data/img/apps/linux.png" || true
+
+          # 4. Extract catalog entries from JSON files and download in parallel
+          echo "Processing game catalog links..."
           mkdir -p target_lists
           > target_lists/urls.txt
 
@@ -40,28 +74,19 @@ jobs:
           fi
 
           sort -u target_lists/urls.txt -o target_lists/urls.txt
-
-          echo "Downloading $(wc -l < target_lists/urls.txt) catalogue assets in parallel..."
           cat target_lists/urls.txt | xargs -n 1 -P 16 -I {} wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/{}" || true
-
-          echo "Scanning JS, HTML, and CSS for nested assets..."
-          find . -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -not -path '*/.*' \
-            -exec grep -o -E '([a-zA-Z0-9_\-\./]+)\.(js|css|json|wasm|data|png|jpg|jpeg|webp|svg|webm|mp3|ogg|wav)' {} + \
-            | awk -F: '{print $2}' \
-            | sed -e 's/^[ \t]*//' -e "s/[\"']//g" -e 's|^/||' \
-            | grep -v -E '^(http|https|//)' \
-            | sort -u > target_lists/nested.txt
-
-          echo "Downloading $(wc -l < target_lists/nested.txt) nested assets in parallel..."
-          cat target_lists/nested.txt | xargs -n 1 -P 16 -I {} wget -q -nc -x -nH --tries=1 --timeout=5 "$BASE/{}" || true
-
           rm -rf target_lists
 
-          # Setup local client routing stubs
+          # 5. Set up fallback routing directories and dummy API responses
+          echo "Configuring routing fallbacks and stubs..."
           for route in os reviews linux help; do
             mkdir -p "$route"
             [ -f index.html ] && cp index.html "$route/index.html"
           done
+
+          mkdir -p __rv status
+          echo '{"version":"1.0.0"}' > __rv/version
+          echo '{"status":"ok"}' > status/ping
 
       - name: Commit and Push Directly to Root
         run: |
@@ -69,8 +94,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --staged --quiet; then
-            echo "No new files to commit."
+            echo "No changes to commit."
           else
-            git commit -m "Auto-scrape web portal assets into repository root"
+            git commit -m "Add full site production assets to root"
             git push
           fi
