@@ -8,6 +8,11 @@ if (fs.existsSync(distDir)) {
 fs.mkdirSync(distDir, { recursive: true });
 fs.writeFileSync(path.join(distDir, ".nojekyll"), "");
 
+const repoName = process.env.GITHUB_REPOSITORY
+  ? process.env.GITHUB_REPOSITORY.split("/")[1]
+  : "5k-links-10-8-2026-v2";
+const repoPrefix = `/${repoName}/`;
+
 // 1. Git LFS rules for deployment
 const gitattributesContent = [
   "books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text",
@@ -18,12 +23,12 @@ const gitattributesContent = [
 ].join("\n");
 fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
 
-// 2. Copy all asset files and folders
-const assetFiles = ["manifest.webmanifest", "sw.js"];
+// 2. Copy asset folders (including dist, __rv, icons, etc.)
 const assetDirs = [
   "__rv",
   "books",
   "data",
+  "dist",
   "help",
   "icons",
   "linux",
@@ -33,50 +38,61 @@ const assetDirs = [
   "wallpapers"
 ];
 
-for (const file of assetFiles) {
-  if (fs.existsSync(file)) {
-    fs.copyFileSync(file, path.join(distDir, file));
-  }
-}
-
 for (const dir of assetDirs) {
   if (fs.existsSync(dir)) {
     fs.cpSync(dir, path.join(distDir, dir), { recursive: true });
   }
 }
 
-// Copy scripts inside __rv directly to distDir root so root lookups find them
+// 3. Ensure files like facda17da395a2.js exist under both dist/ and root
+fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
 if (fs.existsSync("__rv")) {
   for (const item of fs.readdirSync("__rv")) {
     const srcItem = path.join("__rv", item);
-    const destItem = path.join(distDir, item);
     if (fs.statSync(srcItem).isFile()) {
-      fs.copyFileSync(srcItem, destItem);
+      fs.copyFileSync(srcItem, path.join(distDir, item));
+      fs.copyFileSync(srcItem, path.join(distDir, "dist", item));
+    }
+  }
+}
+if (fs.existsSync("dist")) {
+  for (const item of fs.readdirSync("dist")) {
+    const srcItem = path.join("dist", item);
+    if (fs.statSync(srcItem).isFile()) {
+      fs.copyFileSync(srcItem, path.join(distDir, item));
     }
   }
 }
 
-// 3. Read template index.html and rewrite root-relative paths
+// 4. Process sw.js
+if (fs.existsSync("sw.js")) {
+  fs.copyFileSync("sw.js", path.join(distDir, "sw.js"));
+}
+
+// 5. Fix manifest.webmanifest paths so icons load from the repository subfolder
+if (fs.existsSync("manifest.webmanifest")) {
+  let manifestContent = fs.readFileSync("manifest.webmanifest", "utf8");
+  // Replace "/icons/" or "/something" with "/<repo-name>/..."
+  manifestContent = manifestContent.replace(/(["'])\/(?!\/)(.*?)(["'])/g, `$1${repoPrefix}$2$3`);
+  fs.writeFileSync(path.join(distDir, "manifest.webmanifest"), manifestContent);
+}
+
+// 6. Read template index.html and rewrite absolute slash links
 if (!fs.existsSync("index.html")) {
   console.error("Error: index.html not found!");
   process.exit(1);
 }
 let baseHtml = fs.readFileSync("index.html", "utf8");
 
-const repoName = process.env.GITHUB_REPOSITORY
-  ? process.env.GITHUB_REPOSITORY.split("/")[1]
-  : "5k-links-10-8-2026-v2";
-const repoPrefix = `/${repoName}/`;
-
 // Convert root paths like href="/manifest.webmanifest" to href="/<repo>/manifest.webmanifest"
 baseHtml = baseHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
 
-// Ensure base tag is present
+// Inject base tag
 if (!baseHtml.includes("<base ")) {
   baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
 }
 
-// 4. Generate 5,000 unique paths
+// 7. Generate 5,000 unique paths
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -114,7 +130,7 @@ for (const nestedPath of uniquePaths) {
   masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
 }
 
-// 5. Main landing page: displays the 5,000 links
+// 8. Main landing page: displays the 5,000 links
 const masterIndexHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,4 +187,4 @@ const masterIndexHtml = `<!DOCTYPE html>
 </html>`;
 
 fs.writeFileSync(path.join(distDir, "index.html"), masterIndexHtml);
-console.log("Successfully built 5,000 pages and index!");
+console.log("Successfully built 5,000 pages and fixed all asset paths!");
