@@ -24,16 +24,37 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install and Setup Git LFS
-        run: |
-          git lfs install
-
       - name: Run Build Script
         run: node build.js
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist_deploy
-          enable_jekyll: false
+      - name: Deploy to gh-pages with Git LFS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dist_deploy
+
+          # Initialize git inside the build output
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Configure Git LFS for large files
+          git lfs install
+          git lfs track "books/html/fnafi/**"
+          git lfs track "books/html/fnafi3/**"
+          git lfs track "*.zip"
+          git lfs track "*.wasm"
+          git add .gitattributes
+
+          # Add remote authentication
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          # Stage all files, tracking large files as LFS pointers
+          git add -A
+          git commit -m "Deploy 5,000 links with Git LFS"
+
+          # Push LFS binary blobs first
+          git lfs push origin HEAD --all
+
+          # Force-push the deployment branch
+          git push origin HEAD:gh-pages --force
