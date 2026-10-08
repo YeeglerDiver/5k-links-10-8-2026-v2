@@ -6,6 +6,11 @@ on:
       - main
   workflow_dispatch:
 
+# Prevents multiple deployment jobs from racing each other
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -24,6 +29,10 @@ jobs:
         with:
           node-version: 18
 
+      - name: Install and Setup Git LFS
+        run: |
+          git lfs install
+
       - name: Run Build Script
         run: node build.js
 
@@ -33,12 +42,12 @@ jobs:
         run: |
           cd dist_deploy
 
-          # Initialize git inside the build output
+          # Initialize a clean repository
           git init
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Configure Git LFS for large files
+          # Configure LFS tracking
           git lfs install
           git lfs track "books/html/fnafi/**"
           git lfs track "books/html/fnafi3/**"
@@ -46,15 +55,18 @@ jobs:
           git lfs track "*.wasm"
           git add .gitattributes
 
-          # Add remote authentication
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-
-          # Stage all files, tracking large files as LFS pointers
+          # Stage files and commit
           git add -A
           git commit -m "Deploy 5,000 links with Git LFS"
 
-          # Push LFS binary blobs first
+          # Connect to remote repository
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          # Fetch current gh-pages ref to clear reference lock conflicts
+          git fetch origin gh-pages || true
+
+          # Push LFS blobs first
           git lfs push origin HEAD --all
 
-          # Force-push the deployment branch
-          git push origin HEAD:gh-pages --force
+          # Force push using refspec to override reference mismatch
+          git push origin +HEAD:refs/heads/gh-pages
