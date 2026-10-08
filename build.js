@@ -23,7 +23,7 @@ const gitattributesContent = [
 ].join("\n");
 fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
 
-// 2. Copy all asset directories
+// 2. Copy asset folders
 const assetDirs = [
   "__rv",
   "books",
@@ -44,7 +44,7 @@ for (const dir of assetDirs) {
   }
 }
 
-// 3. Copy root-level files
+// 3. Copy root-level files and mirror script assets to dist/
 for (const item of fs.readdirSync(process.cwd())) {
   const full = path.join(process.cwd(), item);
   if (fs.statSync(full).isFile() && !item.startsWith(".") && item !== "build.js") {
@@ -52,7 +52,6 @@ for (const item of fs.readdirSync(process.cwd())) {
   }
 }
 
-// Ensure dist directory exists and mirror root js/css files there too
 fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
 for (const item of fs.readdirSync(distDir)) {
   if (item.endsWith(".js") || item.endsWith(".css")) {
@@ -60,22 +59,79 @@ for (const item of fs.readdirSync(distDir)) {
   }
 }
 
-// 4. Prepare the app HTML template
+// 4. Strip domain-lock overlays and hostname checks from games
+function patchGameLocks(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const item of fs.readdirSync(dir)) {
+    const fullPath = path.join(dir, item);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      patchGameLocks(fullPath);
+    } else if (/\.(html|js)$/i.test(item)) {
+      let content = fs.readFileSync(fullPath, "utf8");
+      let modified = false;
+
+      // Inject aggressive CSS overlay suppression into game HTML files
+      if (item.endsWith(".html")) {
+        const antiOverlayCss = `
+          <style>
+            [id*="lock" i], [class*="lock" i],
+            [id*="overlay" i], [class*="overlay" i],
+            [id*="blocker" i], [class*="blocker" i] {
+              display: none !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              opacity: 0 !important;
+              z-index: -999999 !important;
+            }
+          </style>
+        `;
+        if (content.includes("</head>")) {
+          content = content.replace(/<\/head>/i, `${antiOverlayCss}</head>`);
+          modified = true;
+        } else {
+          content = antiOverlayCss + content;
+          modified = true;
+        }
+      }
+
+      // Neutralize hostname checks and framing restrictions
+      if (content.includes("location") || content.includes("referrer")) {
+        const updated = content
+          .replace(/location\.hostname\s*!==?\s*['"][^'"]+['"]/g, "false")
+          .replace(/window\.location\.hostname\s*!==?\s*['"][^'"]+['"]/g, "false")
+          .replace(/top\.location\s*!==?\s*location/g, "false")
+          .replace(/window\.top\s*!==?\s*window\.self/g, "false")
+          .replace(/document\.referrer/g, '""');
+
+        if (updated !== content) {
+          content = updated;
+          modified = true;
+        }
+      }
+
+      if (modified) {
+        fs.writeFileSync(fullPath, content, "utf8");
+      }
+    }
+  }
+}
+
+patchGameLocks(path.join(distDir, "books"));
+
+// 5. Read template index.html and configure base path
 if (!fs.existsSync("index.html")) {
   console.error("Error: index.html not found!");
   process.exit(1);
 }
 let appHtml = fs.readFileSync("index.html", "utf8");
-
-// Rewrite absolute slash paths to repository subpaths
 appHtml = appHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
 
-// Inject the base tag so assets, fetch requests, and styles resolve relative to the repo root
 if (!appHtml.includes("<base ")) {
   appHtml = appHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
 }
 
-// 5. Generate 5,000 physical nested directories
+// 6. Generate 5,000 physical nested directories
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -100,7 +156,6 @@ while (uniquePaths.size < TOTAL_PAGES) {
 
 let masterLinksHtml = "";
 
-// Create each real folder and write index.html inside it
 for (const nestedPath of uniquePaths) {
   const folderPath = path.join(distDir, nestedPath);
   fs.mkdirSync(folderPath, { recursive: true });
@@ -109,7 +164,7 @@ for (const nestedPath of uniquePaths) {
   masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
 }
 
-// 6. Save the 5,000 links directory index at the site root
+// 7. Directory index dashboard
 const indexHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -160,4 +215,4 @@ const indexHtml = `<!DOCTYPE html>
 </html>`;
 
 fs.writeFileSync(path.join(distDir, "index.html"), indexHtml);
-console.log("Successfully generated all 5,000 directory pages and the main index.");
+console.log("Successfully generated pages, mirrored assets, and removed game domain-locks.");
