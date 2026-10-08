@@ -13,7 +13,7 @@ const repoName = process.env.GITHUB_REPOSITORY
   : "5k-links-10-8-2026-v2";
 const repoPrefix = `/${repoName}/`;
 
-// 1. Git LFS rules
+// 1. Git LFS rules for deployment
 const gitattributesContent = [
   "books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text",
   "books/html/fnafi3/* filter=lfs diff=lfs merge=lfs -text",
@@ -23,7 +23,7 @@ const gitattributesContent = [
 ].join("\n");
 fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
 
-// 2. Copy entire app assets intact
+// 2. Copy all asset directories
 const assetDirs = [
   "__rv",
   "books",
@@ -44,7 +44,7 @@ for (const dir of assetDirs) {
   }
 }
 
-// Copy root files
+// 3. Copy root-level files
 for (const item of fs.readdirSync(process.cwd())) {
   const full = path.join(process.cwd(), item);
   if (fs.statSync(full).isFile() && !item.startsWith(".") && item !== "build.js") {
@@ -52,7 +52,30 @@ for (const item of fs.readdirSync(process.cwd())) {
   }
 }
 
-// 3. Generate 5,000 unique URLs
+// Ensure dist directory exists and mirror root js/css files there too
+fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
+for (const item of fs.readdirSync(distDir)) {
+  if (item.endsWith(".js") || item.endsWith(".css")) {
+    fs.copyFileSync(path.join(distDir, item), path.join(distDir, "dist", item));
+  }
+}
+
+// 4. Prepare the app HTML template
+if (!fs.existsSync("index.html")) {
+  console.error("Error: index.html not found!");
+  process.exit(1);
+}
+let appHtml = fs.readFileSync("index.html", "utf8");
+
+// Rewrite absolute slash paths to repository subpaths
+appHtml = appHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
+
+// Inject the base tag so assets, fetch requests, and styles resolve relative to the repo root
+if (!appHtml.includes("<base ")) {
+  appHtml = appHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
+}
+
+// 5. Generate 5,000 physical nested directories
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -76,12 +99,18 @@ while (uniquePaths.size < TOTAL_PAGES) {
 }
 
 let masterLinksHtml = "";
-for (const p of uniquePaths) {
-  masterLinksHtml += `<a class="card" href="${repoPrefix}?path=${encodeURIComponent(p)}">${p}</a>\n`;
+
+// Create each real folder and write index.html inside it
+for (const nestedPath of uniquePaths) {
+  const folderPath = path.join(distDir, nestedPath);
+  fs.mkdirSync(folderPath, { recursive: true });
+
+  fs.writeFileSync(path.join(folderPath, "index.html"), appHtml);
+  masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
 }
 
-// 4. Save Registry Page as index.html
-const registryHtml = `<!DOCTYPE html>
+// 6. Save the 5,000 links directory index at the site root
+const indexHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -130,28 +159,5 @@ const registryHtml = `<!DOCTYPE html>
 </body>
 </html>`;
 
-fs.writeFileSync(path.join(distDir, "index.html"), registryHtml);
-
-// 5. Setup the App Loader (app.html) with virtual URL rewrite
-let baseHtml = fs.readFileSync("index.html", "utf8");
-
-// Script to make the address bar show the 5,000 deep nested path seamlessly
-const urlRewriteScript = `
-    <script>
-      (function() {
-        const params = new URLSearchParams(window.location.search);
-        const virtualPath = params.get("path");
-        if (virtualPath) {
-          window.history.replaceState({}, "", "${repoPrefix}" + virtualPath + "/");
-        }
-      })();
-    </script>
-`;
-
-baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n${urlRewriteScript}`);
-fs.writeFileSync(path.join(distDir, "app.html"), baseHtml);
-
-// Make 404.html serve the app directly if a path is opened directly
-fs.writeFileSync(path.join(distDir, "404.html"), baseHtml);
-
-console.log("Build complete.");
+fs.writeFileSync(path.join(distDir, "index.html"), indexHtml);
+console.log("Successfully generated all 5,000 directory pages and the main index.");
