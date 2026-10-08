@@ -1,0 +1,47 @@
+name: Mirror Portal and Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scrape-and-bundle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recursively Crawl Portal Assets
+        run: |
+          mkdir -p site_bundle
+          cd site_bundle
+
+          # 1. Mirror known static files recursively using native GNU wget
+          wget \
+            --mirror \
+            --page-requisites \
+            --adjust-extension \
+            --no-parent \
+            --convert-links \
+            --no-clobber \
+            --no-host-directories \
+            https://ixl.com.pulsaudio.ro/ || true
+
+          # 2. Extract catalog file paths from apps.json and books.json using jq
+          if [ -f data/apps.json ]; then
+            grep -o -E 'books/html/[a-zA-Z0-9_\-\./]+' data/apps.json | while read -r path; do
+              wget -q -x -nH "https://ixl.com.pulsaudio.ro/$path" || true
+            done
+          fi
+
+          if [ -f books/books.json ]; then
+            grep -o -E 'books/thumbs/[a-zA-Z0-9_\-\.]+' books/books.json | while read -r thumb; do
+              wget -q -x -nH "https://ixl.com.pulsaudio.ro/$thumb" || true
+            done
+            grep -o -E 'books/covers/[a-zA-Z0-9_\-\.]+' books/books.json | while read -r cover; do
+              wget -q -x -nH "https://ixl.com.pulsaudio.ro/$cover" || true
+            done
+          fi
+
+      - name: Upload Scraped Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: portal-archive
+          path: site_bundle/
