@@ -24,13 +24,16 @@ jobs:
         with:
           node-version: 18
 
-      - name: Build and Distribute 5,000 Nested Pages
+      - name: Install and Setup Git LFS
+        run: |
+          git lfs install
+
+      - name: Build and Distribute 5,000 Nested Pages with LFS
         run: |
           node -e '
           const fs = require("fs");
           const path = require("path");
 
-          // Target output directory
           const distDir = path.join(process.cwd(), "dist_deploy");
           if (fs.existsSync(distDir)) {
             fs.rmSync(distDir, { recursive: true, force: true });
@@ -38,7 +41,12 @@ jobs:
           fs.mkdirSync(distDir, { recursive: true });
           fs.writeFileSync(path.join(distDir, ".nojekyll"), "");
 
-          // 1. Files and directories from repository
+          // Configure Git LFS tracking inside the deploy directory
+          // Tracks large files like .html bundles over standard sizes via LFS
+          const gitattributesContent = `books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text\nbooks/html/fnafi3/* filter=lfs diff=lfs merge=lfs -text\n*.zip filter=lfs diff=lfs merge=lfs -text\n*.wasm filter=lfs diff=lfs merge=lfs -text\n`;
+          fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
+
+          // Copy all files and directories completely (no filtering)
           const assetFiles = ["manifest.webmanifest", "sw.js"];
           const assetDirs = ["__rv", "books", "data", "help", "icons", "linux", "os", "reviews", "status", "wallpapers"];
 
@@ -54,27 +62,22 @@ jobs:
             }
           }
 
-          // 2. Read the master index.html and inject the base URL
           if (!fs.existsSync("index.html")) {
             console.error("Error: index.html not found!");
             process.exit(1);
           }
           let baseIndexHtml = fs.readFileSync("index.html", "utf8");
 
-          // Determine repo base name automatically from runner env
           const repoName = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split("/")[1] : "";
           const baseHref = repoName ? `/${repoName}/` : "/";
 
-          // Inject <base> tag right after <head>
           let templateWithBase = baseIndexHtml;
           if (!templateWithBase.includes("<base ")) {
             templateWithBase = templateWithBase.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${baseHref}">`);
           }
 
-          // Write the modified index.html to the build root
           fs.writeFileSync(path.join(distDir, "index.html"), templateWithBase);
 
-          // 3. Generate 5,000 unique nested routes
           const TOTAL_PAGES = 5000;
           const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -107,13 +110,10 @@ jobs:
             const folderPath = path.join(distDir, nestedPath);
             fs.mkdirSync(folderPath, { recursive: true });
 
-            // Place the index.html with the injected base href into each route
             fs.writeFileSync(path.join(folderPath, "index.html"), templateWithBase);
-
             masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
           }
 
-          // 4. Directory dashboard saved as registry.html
           const masterIndexHtml = `<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -177,3 +177,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist_deploy
+          enable_jekyll: false
