@@ -23,7 +23,7 @@ const gitattributesContent = [
 ].join("\n");
 fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
 
-// 2. Copy directories
+// 2. Copy entire app assets intact
 const assetDirs = [
   "__rv",
   "books",
@@ -44,92 +44,15 @@ for (const dir of assetDirs) {
   }
 }
 
-// 3. Mirror all JS and CSS bundles across dist_deploy/ and dist_deploy/dist/
-fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
-
-function collectAndMirrorFiles(dir) {
-  for (const item of fs.readdirSync(dir)) {
-    const full = path.join(dir, item);
-    if (fs.statSync(full).isDirectory()) {
-      if (item !== "dist_deploy" && item !== ".git") {
-        collectAndMirrorFiles(full);
-      }
-    } else if (/\.(js|css|wasm|json)$/i.test(item)) {
-      // Place a copy at dist_deploy root
-      const rootTarget = path.join(distDir, item);
-      if (!fs.existsSync(rootTarget)) {
-        fs.copyFileSync(full, rootTarget);
-      }
-      // Place a copy inside dist_deploy/dist/
-      const distTarget = path.join(distDir, "dist", item);
-      if (!fs.existsSync(distTarget)) {
-        fs.copyFileSync(full, distTarget);
-      }
-    }
+// Copy root files
+for (const item of fs.readdirSync(process.cwd())) {
+  const full = path.join(process.cwd(), item);
+  if (fs.statSync(full).isFile() && !item.startsWith(".") && item !== "build.js") {
+    fs.copyFileSync(full, path.join(distDir, item));
   }
 }
 
-collectAndMirrorFiles(process.cwd());
-
-// Copy sw.js to root
-if (fs.existsSync("sw.js")) {
-  fs.copyFileSync("sw.js", path.join(distDir, "sw.js"));
-}
-
-// 4. Global string replacement to patch hardcoded domain paths
-function patchFile(filePath) {
-  let content = fs.readFileSync(filePath, "utf8");
-  const updated = content
-    .replace(/(['"])\/books\//g, `$1${repoPrefix}books/`)
-    .replace(/(['"])\/dist\//g, `$1${repoPrefix}dist/`)
-    .replace(/(['"])\/icons\//g, `$1${repoPrefix}icons/`)
-    .replace(/(['"])\/__rv\//g, `$1${repoPrefix}__rv/`)
-    .replace(/(['"])\/status\//g, `$1${repoPrefix}status/`)
-    .replace(/(['"])\/data\//g, `$1${repoPrefix}data/`)
-    .replace(/(['"])\/suggest/g, `$1${repoPrefix}suggest`)
-    .replace(/(['"])\/sw\.js(['"])/g, `$1${repoPrefix}sw.js$2`);
-
-  if (updated !== content) {
-    fs.writeFileSync(filePath, updated, "utf8");
-  }
-}
-
-function walkAndPatch(dir) {
-  for (const item of fs.readdirSync(dir)) {
-    if (item === ".git") continue;
-    const full = path.join(dir, item);
-    if (fs.statSync(full).isDirectory()) {
-      walkAndPatch(full);
-    } else if (/\.(js|json|css|webmanifest|html)$/i.test(item)) {
-      patchFile(full);
-    }
-  }
-}
-walkAndPatch(distDir);
-
-// 5. Setup base template
-if (!fs.existsSync("index.html")) {
-  console.error("Error: index.html not found!");
-  process.exit(1);
-}
-let baseHtml = fs.readFileSync("index.html", "utf8");
-baseHtml = baseHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
-
-const swInitScript = `
-    <base href="${repoPrefix}">
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("${repoPrefix}sw.js", { scope: "${repoPrefix}" })
-          .catch(() => {});
-      }
-    </script>
-`;
-
-if (!baseHtml.includes("<base ")) {
-  baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n${swInitScript}`);
-}
-
-// 6. Generate 5,000 unique paths
+// 3. Generate 5,000 unique URLs
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -153,17 +76,12 @@ while (uniquePaths.size < TOTAL_PAGES) {
 }
 
 let masterLinksHtml = "";
-
-for (const nestedPath of uniquePaths) {
-  const folderPath = path.join(distDir, nestedPath);
-  fs.mkdirSync(folderPath, { recursive: true });
-
-  fs.writeFileSync(path.join(folderPath, "index.html"), baseHtml);
-  masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
+for (const p of uniquePaths) {
+  masterLinksHtml += `<a class="card" href="${repoPrefix}?path=${encodeURIComponent(p)}">${p}</a>\n`;
 }
 
-// 7. Directory Registry Dashboard
-const masterIndexHtml = `<!DOCTYPE html>
+// 4. Save Registry Page as index.html
+const registryHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -212,5 +130,28 @@ const masterIndexHtml = `<!DOCTYPE html>
 </body>
 </html>`;
 
-fs.writeFileSync(path.join(distDir, "index.html"), masterIndexHtml);
-console.log("Assets mirrored and paths patched successfully.");
+fs.writeFileSync(path.join(distDir, "index.html"), registryHtml);
+
+// 5. Setup the App Loader (app.html) with virtual URL rewrite
+let baseHtml = fs.readFileSync("index.html", "utf8");
+
+// Script to make the address bar show the 5,000 deep nested path seamlessly
+const urlRewriteScript = `
+    <script>
+      (function() {
+        const params = new URLSearchParams(window.location.search);
+        const virtualPath = params.get("path");
+        if (virtualPath) {
+          window.history.replaceState({}, "", "${repoPrefix}" + virtualPath + "/");
+        }
+      })();
+    </script>
+`;
+
+baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n${urlRewriteScript}`);
+fs.writeFileSync(path.join(distDir, "app.html"), baseHtml);
+
+// Make 404.html serve the app directly if a path is opened directly
+fs.writeFileSync(path.join(distDir, "404.html"), baseHtml);
+
+console.log("Build complete.");
