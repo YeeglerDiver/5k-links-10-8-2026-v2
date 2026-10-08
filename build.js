@@ -13,17 +13,7 @@ const repoName = process.env.GITHUB_REPOSITORY
   : "5k-links-10-8-2026-v2";
 const repoPrefix = `/${repoName}/`;
 
-// 1. Git LFS rules
-const gitattributesContent = [
-  "books/html/fnafi/* filter=lfs diff=lfs merge=lfs -text",
-  "books/html/fnafi3/* filter=lfs diff=lfs merge=lfs -text",
-  "*.zip filter=lfs diff=lfs merge=lfs -text",
-  "*.wasm filter=lfs diff=lfs merge=lfs -text",
-  ""
-].join("\n");
-fs.writeFileSync(path.join(distDir, ".gitattributes"), gitattributesContent);
-
-// 2. Copy asset folders
+// 1. Copy asset folders
 const assetDirs = [
   "__rv",
   "books",
@@ -44,25 +34,16 @@ for (const dir of assetDirs) {
   }
 }
 
-// 3. Mirror all assets so both root and /dist/ lookups resolve
-fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
-
-function mirrorFiles(sourceDir) {
-  if (fs.existsSync(sourceDir)) {
-    for (const item of fs.readdirSync(sourceDir)) {
-      const srcItem = path.join(sourceDir, item);
-      if (fs.statSync(srcItem).isFile()) {
-        fs.copyFileSync(srcItem, path.join(distDir, item));
-        fs.copyFileSync(srcItem, path.join(distDir, "dist", item));
-      }
-    }
+// 2. Copy root files
+const rootFiles = ["manifest.webmanifest", "sw.js"];
+for (const file of rootFiles) {
+  if (fs.existsSync(file)) {
+    fs.copyFileSync(file, path.join(distDir, file));
   }
 }
 
-mirrorFiles("__rv");
-mirrorFiles("dist");
-
-// Copy root-level scripts & styles to dist/ as well
+// Copy extra .js and .css files to dist_deploy root and dist_deploy/dist/
+fs.mkdirSync(path.join(distDir, "dist"), { recursive: true });
 for (const item of fs.readdirSync(process.cwd())) {
   if (item.endsWith(".js") || item.endsWith(".css")) {
     fs.copyFileSync(item, path.join(distDir, item));
@@ -70,39 +51,46 @@ for (const item of fs.readdirSync(process.cwd())) {
   }
 }
 
-// 4. Update manifest.webmanifest paths
-if (fs.existsSync("manifest.webmanifest")) {
-  let manifestContent = fs.readFileSync("manifest.webmanifest", "utf8");
-  manifestContent = manifestContent.replace(/(["'])\/(?!\/)(.*?)(["'])/g, `$1${repoPrefix}$2$3`);
-  fs.writeFileSync(path.join(distDir, "manifest.webmanifest"), manifestContent);
+// 3. Patch hardcoded paths inside all copied JS and JSON bundles
+function patchPathsInDir(directory) {
+  for (const item of fs.readdirSync(directory)) {
+    const fullPath = path.join(directory, item);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      patchPathsInDir(fullPath);
+    } else if (/\.(js|json|css|webmanifest)$/i.test(item)) {
+      let content = fs.readFileSync(fullPath, "utf8");
+      // Replace hardcoded root references with the repo prefix
+      const updated = content
+        .replace(/(['"])\/books\//g, `$1${repoPrefix}books/`)
+        .replace(/(['"])\/dist\//g, `$1${repoPrefix}dist/`)
+        .replace(/(['"])\/icons\//g, `$1${repoPrefix}icons/`)
+        .replace(/(['"])\/__rv\//g, `$1${repoPrefix}__rv/`)
+        .replace(/(['"])\/status\//g, `$1${repoPrefix}status/`)
+        .replace(/(['"])\/sw\.js(['"])/g, `$1${repoPrefix}sw.js$2`);
+
+      if (updated !== content) {
+        fs.writeFileSync(fullPath, updated, "utf8");
+      }
+    }
+  }
 }
 
-// 5. Prepare template index.html with Service Worker registration
+patchPathsInDir(distDir);
+
+// 4. Base HTML setup
 if (!fs.existsSync("index.html")) {
   console.error("Error: index.html not found!");
   process.exit(1);
 }
 let baseHtml = fs.readFileSync("index.html", "utf8");
-
-// Convert root paths like href="/manifest.webmanifest"
 baseHtml = baseHtml.replace(/(href|src)=["']\/(?!\/)(.*?)["']/gi, `$1="${repoPrefix}$2"`);
 
-// Inject base tag and Service Worker installer
-const swSnippet = `
-    <base href="${repoPrefix}">
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("${repoPrefix}sw.js", { scope: "${repoPrefix}" })
-          .catch(() => {});
-      }
-    </script>
-`;
-
 if (!baseHtml.includes("<base ")) {
-  baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n${swSnippet}`);
+  baseHtml = baseHtml.replace(/<head([^>]*)>/i, `<head$1>\n    <base href="${repoPrefix}">`);
 }
 
-// 6. Generate 5,000 unique paths
+// 5. Generate 5,000 unique paths
 const TOTAL_PAGES = 5000;
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -139,7 +127,7 @@ for (const nestedPath of uniquePaths) {
   masterLinksHtml += `<a class="card" href="./${nestedPath}/">${nestedPath}</a>\n`;
 }
 
-// 7. Root Dashboard
+// 6. Directory Index
 const masterIndexHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -196,4 +184,4 @@ const masterIndexHtml = `<!DOCTYPE html>
 </html>`;
 
 fs.writeFileSync(path.join(distDir, "index.html"), masterIndexHtml);
-console.log("Successfully built 5,000 pages with active service worker routing!");
+console.log("Build complete with path patching applied.");
