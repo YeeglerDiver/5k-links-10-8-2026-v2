@@ -1,0 +1,108 @@
+<!Doctype html>
+<html lang="en">
+  <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=708",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Hexgl"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <!-- All credit to bkcore to making this game, he is the true legend! -->
+    <title>HexGL</title>
+    <meta charset="utf-8">
+    <meta name="description" content="HexGL is a futuristic racing game built by Thibaut Despoulain (BKcore) using HTML5, Javascript and WebGL. Come challenge your friends on this fast-paced 3D game!">
+    <meta property="og:title" content="HexGL, the HTML5 futuristic racing game." />
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="http://hexgl.bkcore.com/" />
+    <meta property="og:image" content="http://hexgl.bkcore.com/image.png" />
+    <meta property="og:site_name" content="HexGL by BKcore" />
+    <meta property="fb:admins" content="1482017639" />
+    <link rel="icon" href="icon.png" type="image/png">
+    <link rel="shortcut icon" href="icon.png" type="image/png">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/multi.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" charset="utf-8">
+    <style>
+      body {
+        padding:0;
+        margin:0;
+      }
+      canvas { pointer-events:none; width: 100%;}
+      #overlay{
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+    </style>
+  <!-- Google Analytics -->
+
+
+</head>
+  <body>
+    <div id="step-1">
+      <div id="global"></div>
+      <div id="title">
+      </div>
+      <div id="menucontainer">
+        <div id="menu">
+          <div id="start">Start</div>
+          <div id="s-controlType">Controls: Keyboard</div>
+          <div id="s-quality">Quality: High</div>
+          <div id="s-hud">HUD: On</div>
+          <div id="s-godmode" style="display: none">Godmode: Off</div>
+        </div>
+      </div>
+    </div>
+    <div id="step-2" style="display: none">
+      <div id="ctrl-help">Click/Touch to continue.</div>
+    </div>
+    <div id="step-3" style="display: none">
+      <div id="progressbar"></div>
+    </div>
+    <div id="step-4" style="display: none">
+      <div id="overlay"></div>
+      <div id="main"></div>
+    </div>
+    <div id="step-5" style="display: none">
+      <div id="time"></div>
+      <div id="ctrl-help">Click/Touch to continue.</div>
+    </div>
+
+    <div id="leapinfo" style="display: none"></div>
+    <script src="/js/main.js"></script>
+    <script src="libs/leap-0.4.1.min.js"></script>
+    <script src="libs/Three.dev.js"></script>
+    <script src="libs/ShaderExtras.js"></script>
+    <script src="libs/postprocessing/EffectComposer.js"></script>
+    <script src="libs/postprocessing/RenderPass.js"></script>
+    <script src="libs/postprocessing/BloomPass.js"></script>
+    <script src="libs/postprocessing/ShaderPass.js"></script>
+    <script src="libs/postprocessing/MaskPass.js"></script>
+    <script src="libs/Detector.js"></script>
+    <script src="libs/Stats.js"></script>
+    <script src="libs/DAT.GUI.min.js"></script>
+    <script src="bkcore.coffee/controllers/TouchController.js"></script>
+    <script src="bkcore.coffee/controllers/OrientationController.js"></script>
+    <script src="bkcore.coffee/controllers/GamepadController.js"></script>
+    <script src="bkcore.coffee/Timer.js"></script>
+    <script src="bkcore.coffee/ImageData.js"></script>
+    <script src="bkcore.coffee/Utils.js"></script>
+    <script src="bkcore/threejs/RenderManager.js"></script>
+    <script src="bkcore/threejs/Shaders.js"></script>
+    <script src="bkcore/threejs/Particles.js"></script>
+    <script src="bkcore/threejs/Loader.js"></script>
+    <script src="bkcore/Audio.js"></script>
+    <script src="bkcore/hexgl/HUD.js"></script>
+    <script src="bkcore/hexgl/RaceData.js"></script>
+    <script src="bkcore/hexgl/ShipControls.js"></script>
+    <script src="bkcore/hexgl/ShipEffects.js"></script>
+    <script src="bkcore/hexgl/CameraChase.js"></script>
+    <script src="bkcore/hexgl/Gameplay.js"></script>
+    <script src="bkcore/hexgl/tracks/Cityscape.js"></script>
+    <script src="bkcore/hexgl/HexGL.js"></script>
+    <script src="launch.js"></script>
+</body>
+</html>

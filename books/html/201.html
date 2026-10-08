@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=184",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Time Shooter 3: SWAT"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Time Shooter 3 SWAT</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mistirk/google@eebffdf79a14f6e01e153d5cd4bed23c432874fb/version/time-s3/style.css">
+  <!-- Google Analytics -->
+
+
+</head>
+  <body class="dark">
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-cover" style="display:none;">
+      <div id="unity-loading-bar">
+        <div id="unity-logo"><img src="https://cdn.jsdelivr.net/gh/mistirk/google@eebffdf79a14f6e01e153d5cd4bed23c432874fb/version/time-s3/logo.png"></div>
+        <div id="unity-progress-bar-empty" style="display: none;">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <div id="unity-fullscreen-button" style="display: none;"></div>
+    <script>
+      const hideFullScreenButton = "1";
+      const buildUrl = "https://cdn.jsdelivr.net/gh/mistirk/google@eebffdf79a14f6e01e153d5cd4bed23c432874fb/version/time-s3";
+      const loaderUrl = buildUrl + "/ts3.loader.js";
+      const config = {
+        dataUrl: buildUrl + "/ts3.data",
+        frameworkUrl: buildUrl + "/ts3.framework.js",
+        codeUrl: buildUrl + "/ts3.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "GoGoMan",
+        productName: "Time Shooter SWAT",
+        productVersion: "0.03",
+      };
+
+      const container = document.querySelector("#unity-container");
+      const canvas = document.querySelector("#unity-canvas");
+      const loadingCover = document.querySelector("#loading-cover");
+      const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+      const progressBarFull = document.querySelector("#unity-progress-bar-full");
+      const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      const spinner = document.querySelector('.spinner');
+
+      const canFullscreen = (function() {
+        for (const key of [
+            'exitFullscreen',
+            'webkitExitFullscreen',
+            'webkitCancelFullScreen',
+            'mozCancelFullScreen',
+            'msExitFullscreen',
+          ]) {
+          if (key in document) {
+            return true;
+          }
+        }
+        return false;
+      }());
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        config.devicePixelRatio = 1;
+      }
+      canvas.style.background = "url('" + buildUrl + "/ts3.jpg') center / cover";
+      loadingCover.style.display = "";
+
+      const script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          spinner.style.display = "none";
+          progressBarEmpty.style.display = "";
+          progressBarFull.style.width = `${100 * progress}%`;
+        }).then((unityInstance) => {
+          loadingCover.style.display = "none";
+          if (canFullscreen) {
+            if (!hideFullScreenButton) {
+              fullscreenButton.style.display = "";
+            }
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
+          }
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+</body>
+</html>

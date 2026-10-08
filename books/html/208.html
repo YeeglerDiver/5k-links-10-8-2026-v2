@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=191",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Rolly Vortex"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <base href="https://cdn.jsdelivr.net/gh/genizy/assets@main/rolly-vortex/">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Rolly Vortex</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" sizes="256x256" href="icon-256.png" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="shortcut icon" sizes="256x256" href="icon-256.png" />
+    <link rel="icon" type="image/x-icon" href="icon-32.png" />
+    <style type="text/css">
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      html,
+      body {
+        background: #000;
+        color: #fff;
+        overflow: hidden;
+        touch-action: none;
+        -ms-touch-action: none;
+      }
+      canvas {
+        touch-action-delay: none;
+        touch-action: none;
+        -ms-touch-action: none;
+      }
+    </style>
+  <!-- Google Analytics -->
+
+
+</head>
+
+  <body>
+    <div id="c2canvasdiv">
+      <canvas id="c2canvas" width="720" height="1280">
+        <h1>Your browser does not appear to support HTML5. Try upgrading your browser to the latest version. <a href="http://www.whatbrowser.org">What is a browser?</a><br><hr><br><a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br /><a href="http://www.google.com/chrome/">Google Chrome</a><br /><a href="http://www.apple.com/safari/download/">Apple Safari</a>
+        </h1>
+      </canvas>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/c2runtime.js"></script>
+    <script>
+      jQuery(document).ready(function () {
+        cr_createRuntime("c2canvas");
+      });
+      function onVisibilityChanged() {
+        if (document.hidden || document.mozHidden || document.webkitHidden || document.msHidden) cr_setSuspended(true);
+        else cr_setSuspended(false);
+      }
+
+      document.addEventListener("visibilitychange", onVisibilityChanged, false);
+      document.addEventListener("mozvisibilitychange", onVisibilityChanged, false);
+      document.addEventListener("webkitvisibilitychange", onVisibilityChanged, false);
+      document.addEventListener("msvisibilitychange", onVisibilityChanged, false);
+
+      function OnRegisterSWError(e) {
+        console.warn("Failed to register service worker: ", e);
+      }
+
+      window.C2_RegisterSW = function C2_RegisterSW() {
+        if (!navigator.serviceWorker) return; // no SW support, ignore call
+
+        try {
+          navigator.serviceWorker
+            .register("sw.js", { scope: "./" })
+            .then(function (reg) {
+              console.log("Registered service worker on " + reg.scope);
+            })
+            .catch(OnRegisterSWError);
+        } catch (e) {
+          OnRegisterSWError(e);
+        }
+      };
+    </script>
+</body>
+</html>

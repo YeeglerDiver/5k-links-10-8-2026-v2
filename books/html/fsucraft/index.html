@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=809",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Fsucraft"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+<title>eagler</title>
+<meta charset="UTF-8" />
+<script type="text/javascript" src="eagswebrtc.js"></script>
+<script type="text/javascript" src="music.js"></script>
+<script type="text/javascript" src="classes.js"></script>
+<script type="text/javascript">
+if(document.location.href.startsWith("file:")) {
+alert("You're not supposed to 'open' this file in your browser. Please upload this folder to your HTTP(s) server and access it via the internet. This is not a bug, please read the documentation");
+}else {
+window.addEventListener("load", async function(){
+/*
+let wardUrl = "";
+try {
+  wardUrl = (await (await fetch("https://pipedapi.tokhmi.xyz/streams/5VuDwU4bW8Q")).json()).audioStreams[0].url;
+} catch (e) {}
+*/
+const relayId = Math.floor(Math.random() * 3);
+window.eaglercraftOpts = {
+container: "game_frame", assetsURI: "assets.epk", serverWorkerURI: "worker_bootstrap.js", worldsFolder: "TEST",
+assetOverrides: {
+    // "title/no-pano-blur.flag": "",
+	"records/wait.mp3": "wait.mp3",
+	"records/mellohi.mp3": "https://stream.nightride.fm/chillsynth.m4a",
+	"records/far.mp3": "https://stream.nightride.fm/nightride.m4a",
+	"records/cat.mp3": "http://usa9.fastcast4u.com/proxy/jamz?mp=/1",
+	"records/ward.mp3": "http://fr4.1mix.co.uk:8000/192h",
+	"records/strad.mp3": "http://listen.011fm.com:8028/stream15",
+	"records/blocks.mp3": "https://www.ophanim.net:8444/s/9780",
+	"records/13.mp3": "https://s2.radio.co/s2b2b68744/listen"
+	// "sounds/gta.mp3": "https://invidious.zapashcanon.fr/latest_version?itag=251&id=YRlIl6K6S88"
+	// "records/ward.mp3": wardUrl
+	// "sounds/gta.mp3": ""
+},
+servers: [
+	{ serverName: "Local Test Server", serverAddress: "localhost:25565", hideAddress: false }
+],
+relays: [
+	{ addr: "wss://relay.deev.is/", name: "lax1dude relay #1", primary: relayId == 0 },
+	{ addr: "wss://relay.lax1dude.net/", name: "lax1dude relay #2", primary: relayId == 1 },
+	{ addr: "wss://relay.shhnowisnottheti.me/", name: "ayunami relay #1", primary: relayId == 2 }
+],
+mainMenu: { splashes: [
+"Darviglet!", "eaglerenophile!", "You Eagler!", "Yeeeeeee!", "yeee",
+"EEEEEEEEE!", "You Darvig!", "You Vigg!", ":>", "|>", "You Yumpster!"
+], eaglerLogo: false }};
+(function(){
+var q = window.location.search;
+if(typeof q === 'string' && q.startsWith("?")) {
+	q = new URLSearchParams(q);
+	var s = q.get("server");
+	if(s) window.eaglercraftOpts.joinServer = s;
+}
+})();
+main();
+});}
+</script>
+
+ <style>
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 1px solid black;
+    }
+  </style>
+<!-- Google Analytics -->
+
+
+</head>
+<body>
+  <div id="popup">
+    <p>THIS MOD MAKE BY AL JIHAD YA ISLAMI FUNDATION</p>
+	<p> أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا ٱللَّٰهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ ٱللَّٰهِ</p>
+	<p>ašhadu ʾan lā ʾilāha ʾilla -llāhu, wa-ʾašhadu ʾanna muḥammadan rasūlu -llāh</p>
+	<p> if not muslim say the above text and then take shower</p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+<body style="margin:0px;width:100vw;height:100vh;" id="game_frame">
+<script>
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+  </script>
+</body>
+</html>

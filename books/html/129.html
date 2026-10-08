@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=129",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Flappy Bird"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    
+    
+    
+    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/129/">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Flappy Bird Multiplayer</title>
+    <style>
+        html,
+        body {
+            background: #000;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            padding: 0;
+            margin: 0;
+        }
+
+        div#gameContainer {
+            background: transparent !important;
+            position: absolute;
+        }
+
+        div#gameContainer canvas {
+            position: absolute;
+        }
+
+        div#gameContainer canvas[data-pixel-art="true"] {
+            position: absolute;
+            image-rendering: optimizeSpeed;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -o-crisp-edges;
+            image-rendering: crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimize-contrast;
+            image-rendering: pixelated;
+            -ms-interpolation-mode: nearest-neighbor;
+        }
+    </style>
+<!-- Google Analytics -->
+
+
+</head>
+
+<body>
+    <div id="gameContainer">
+        <canvas id="unity-canvas" data-pixel-art=""></canvas>
+        <script src="Build/V0.1.loader.js"></script>
+        <script>
+            function mergeFiles(fileParts) {
+                return new Promise((resolve, reject) => {
+                    let buffers = [];
+
+                    function fetchPart(index) {
+                        if (index >= fileParts.length) {
+                            let mergedBlob = new Blob(buffers);
+                            let mergedFileUrl = URL.createObjectURL(mergedBlob);
+                            resolve(mergedFileUrl);
+                            return;
+                        }
+                        fetch(fileParts[index]).then(response => response.arrayBuffer()).then(data => {
+                            buffers.push(data);
+                            fetchPart(index + 1);
+                        }).catch(reject);
+                    }
+                    fetchPart(0);
+                });
+            }
+            var parts = ["Build/V0.1.wasm.part1", "Build/V0.1.wasm.part2"];
+            Promise.all([
+                mergeFiles(parts)
+            ]).then(([mergedUrl]) => {
+                var canvas = document.querySelector("#unity-canvas");
+                var config = {
+                    dataUrl: "Build/V0.1.data",
+                    frameworkUrl: "Build/V0.1.framework.js",
+                    codeUrl: mergedUrl,
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "eli_hoffman",
+                    productName: "Flappy Bird Multiplayer",
+                    productVersion: "0.1",
+                };
+                var scaleToFit;
+                try {
+                    scaleToFit = !!JSON.parse("");
+                } catch (e) {
+                    scaleToFit = true;
+                }
+
+                function progressHandler(progress) {
+                    var percent = progress * 100 + '%';
+                    canvas.style.background = 'linear-gradient(to right, white, white ' + percent + ', transparent ' + percent + ', transparent) no-repeat center';
+                    canvas.style.backgroundSize = '100% 1rem';
+                }
+
+                function onResize() {
+                    var container = canvas.parentElement;
+                    var w;
+                    var h;
+                    if (scaleToFit) {
+                        w = window.innerWidth;
+                        h = window.innerHeight;
+                        var r = 800 / 600;
+                        if (w * r > window.innerHeight) {
+                            w = Math.min(w, Math.ceil(h / r));
+                        }
+                        h = Math.floor(w * r);
+                    } else {
+                        w = 600;
+                        h = 800;
+                    }
+                    container.style.width = canvas.style.width = w + "px";
+                    container.style.height = canvas.style.height = h + "px";
+                    container.style.top = Math.floor((window.innerHeight - h) / 2) + "px";
+                    container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
+                }
+                createUnityInstance(canvas, config, progressHandler).then(function (instance) {
+                    canvas = instance.Module.canvas;
+                    onResize();
+                });
+                window.addEventListener('resize', onResize);
+                onResize();
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    // Mobile device style: fill the whole browser client area with the game canvas:
+                    const meta = document.createElement('meta');
+                    meta.name = 'viewport';
+                    meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+                    document.getElementsByTagName('head')[0].appendChild(meta);
+                }
+            }).catch(error => {
+                console.error(error);
+            });
+        </script>
+    </div>
+</body>
+
+</html>

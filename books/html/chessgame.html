@@ -1,0 +1,112 @@
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=1217",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Chess"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard --><base href="https://cdn.jsdelivr.net/gh/WanoCapy/ChickenKingsVault@main/"><!-- Google Analytics -->
+
+
+</head>
+<Module>
+
+
+<!-- Ultimate Game Stash file--> 
+<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+
+
+
+
+</style><style type="text/css">#button {
+  display:none;
+}
+.imgb_vis {
+  animation: imgb-animation 7s linear;
+}
+@keyframes imgb-animation {
+  10% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(100px);
+  }
+  90% {
+    transform: translateX(100px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}</style><!-- Google Analytics -->
+
+
+</head><body dir="ltr"><script>
+		var gameConfig = {
+			swfUrl: "https://cdn.jsdelivr.net/gh/AlbertKraus/maui@2ff9d96543fae94d4e239304d8d39f6ac137a380/src/Controls/src/Dat/462874.dat"		
+		}
+</script>
+<div id="waflashContainer">
+<canvas class="waflashCanvas" id="canvas" tabindex="1" width="1879" height="931" style="cursor: default; --waf-content-width: 360px; --waf-content-height: 225px;" waf-content-width="360" waf-content-height="225" waf-content-fps="30"></canvas>
+<div id="waflashStatus" style="display: none;">Playing..</div>
+<script>
+		var ua = navigator.userAgent.toLowerCase();
+		if ( (navigator.appName =='Netscape' && ua.indexOf('trident') != -1) || (ua.indexOf("msie") != -1)) {
+    		var waf = document.getElementById('waflashStatus');
+			waf.style.display ='block';
+			waf.innerText ='??? ?????(IE) ??? ??? ???? ???? !\n??, ???? ?? ????? ??????.';
+			gtag('event', 'connect_from_ie', {'event_category': 'error', 'event_label': ua });
+		}
+	</script>
+<script crossorigin="anonymous" type="module">
+		let is_mobile = /Mobi/i.test(window.navigator.userAgent);
+		if (is_mobile) {
+			function scrollToSubject() {
+				try {
+					window.scrollTo({
+						top: 100,
+						left: 0,
+						behavior: 'smooth'
+					});
+				} catch (e) {}
+			}
+			scrollToSubject();
+			window.addEventListener("orientationchange", function() {
+				setTimeout(scrollToSubject, 100);
+			});
+		} else {
+			document.getElementById('canvas').focus();
+		}
+		document.getElementById('canvas').addEventListener("keydown", function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+		});
+		document.getElementById('canvas').addEventListener("click", function() {
+			document.getElementById('canvas').focus();
+		});
+		document.addEventListener("mousedown", (function() {
+			const canvasElement = document.getElementById('canvas');
+			let focused = false;
+			return function(ev) {
+				if (ev.target == canvasElement) {
+					if (!focused) {
+						canvasElement.focus();
+						focused = true;
+					}
+				} else {
+					if (focused) {
+						focused = false;
+					}
+				}
+				return true;
+			}
+		})());
+		import {
+			createWaflash
+		} from 'https://cdn.jsdelivr.net/gh/zhit73/wafedit@d04643423eb15794748adbb8921f8a3ee3f41437/wasm/waflash-player.min.js';
+		createWaflash(gameConfig.swfUrl, window.wafOptions || {});
+	</script>
+</div>
+<script src=""></script>
+
+<script>gadgets.util.runOnLoadHandlers();</script><script>window.google.csi.tickDl();
+</body></html>

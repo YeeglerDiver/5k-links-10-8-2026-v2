@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=250",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Bad Ice Cream"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <base href="https://cdn.jsdelivr.net/gh/genizy/assets@main/bad-ice-cream/">
+    <meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#382C2A" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+    <title>Bad Ice Cream</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="poki.js"></script>
+    <script type="text/javascript" src="./js/loader.js"></script>
+    <script type="text/javascript" src="./js/virtualJoystickSkinMod.js"></script>
+    <script type="text/javascript" src="./preloader/nitromePreloader.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        outline: none;
+      }
+
+      html,
+      body,
+      #container {
+        margin: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        background-color: #9badbe;
+      }
+
+      #splash {
+        position: absolute;
+        visibility: hidden;
+        z-index: 10;
+      }
+
+      #splash__image {
+        position: absolute;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: url("assets/badicecream_splash.jpg");
+        visibility: visible;
+        transition: opacity 0.5s;
+        z-index: 10;
+      }
+
+      #progress__root {
+        position: absolute;
+      }
+
+      #progress__line {
+        width: 0;
+        height: 100%;
+        transition: all 0.5s;
+      }
+    </style>
+  <!-- Google Analytics -->
+
+
+</head>
+
+  <body>
+    <div id="splash__image">
+      <div id="progress__root">
+        <div id="progress__line"></div>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener("load", () => {
+        PokiSDK.setDebugTouchOverlayController(true);
+
+        PokiSDK.init()
+          .then(() => {
+            // successfully initialized
+            onPokiInitComplete(false);
+          })
+          .catch(() => {
+            // successfully initialized but the user has adblock
+            onPokiInitComplete(true);
+          });
+        let config;
+
+        config = {
+          key: "bic1",
+          title: "BadIceCream 1",
+          filename: "BadIceCream1_sdk",
+          pokiSDK: true,
+          debugPoki: false,
+          showFPS: false,
+          debug: false,
+          splash: "assets/badicecream_splash.jpg",
+          start: null,
+          width: 550,
+          height: 550,
+          x: 0,
+          y: 0,
+          w: "100%",
+          h: "100%",
+          stageScaleMode: null,
+          stageAlign: null,
+          progressParserWeigth: 1,
+          progress: {
+            direction: "lr",
+            back: "#35809e",
+            line: "#070bff",
+            rect: [0.25, 0.65, 0.5, 0.03],
+          },
+          box2dVersion: "none",
+          skipFramesOfScene: null,
+          buttonPokiSDKActions: null,
+          retryButtonIDS: null,
+          retryButtonAction: null,
+          actionOnStop: null,
+          actionWhenRetryButtonEncountered: null,
+          binary: [
+            {
+              name: "BadIceCream1_sdk",
+              path: "assets/BadIceCream1_sdk.swf",
+              size: 1937690,
+              resourceType: "GAME",
+            },
+          ],
+          runtime: "js/BadIceCream.js",
+        };
+
+        PokiSDK.setDebug(config.debugPoki);
+
+        Loader.init(config);
+
+        let onPokiInitComplete = (adBlocked) => {
+          PokiSDK.adBlocked = adBlocked;
+          PokiSDK.gameLoadingStart();
+
+          Loader.runGame(
+            (fill) => {
+              PokiSDK.gameLoadingProgress({
+                percentageDone: fill,
+                kbLoaded: 0,
+                kbTotal: 0,
+                fileNameLoaded: "",
+                filesLoaded: 0,
+                filesTotal: 0,
+              });
+              window.nitromePreloaderSetProgress(fill / 1.0);
+            },
+            (instance) => {
+              PokiSDK.gameLoadingFinished();
+              window.nitromePreloaderSetComplete();
+            }
+          );
+        };
+        window.nitromePreloaderInit("bad-ice-cream");
+      });
+    </script>
+</body>
+</html>

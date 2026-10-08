@@ -1,0 +1,109 @@
+<html>
+	<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=646",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="We Become What We Behold"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+        <base href="https://cdn.jsdelivr.net/gh/genizy/wbwwb@main/">
+		<link rel="stylesheet" href="css/game.css">
+	<!-- Google Analytics -->
+
+
+</head>
+	<body>
+		<div id="stage"></div>
+		<div id="modal_shade"></div>
+		<div class="overlay" id="warning">
+			<div>oh noes</div>
+			<div>
+			your browser doesn't support webgl.<br>
+			try a different browser or computer?
+			</div>
+		</div>
+		<div class="overlay" id="paused">
+			<div>paused</div>
+			<div>
+			click anywhere to resume
+			</div>
+		</div>
+</body>
+</html>
+
+<!-- External Libraries -->
+<script src="js/lib/pixi.min.js"></script>
+<script src="js/lib/howler.js"></script>
+<script src="js/lib/stats.min.js"></script>
+<script>var createjs = window;</script>
+<script src="js/lib/tweenjs-0.6.2.min.js"></script>
+<script>Ticker.framerate=60; Ticker.paused=true;</script>
+<script src="js/lib/helpers.js"></script>
+
+<!-- Core Engine Code -->
+<script src="js/core/Game.js"></script>
+<script src="js/core/SceneManager.js"></script>
+<script src="js/core/Scene.js"></script>
+
+<!-- Main Game Scene Code -->
+<script src="js/game/World.js"></script>
+<script src="js/game/Camera.js"></script>
+<script src="js/game/Director.js"></script>
+<script src="js/game/Peep.js"></script>
+<script src="js/game/TV.js"></script>
+<script src="js/game/AnimationProp.js"></script>
+<script src="js/game/ScreenShake.js"></script>
+<script src="js/game/ScreenZoomOut.js"></script>
+<script src="js/game/Gore.js"></script>
+<script src="js/game/DeadBody.js"></script>
+<script src="js/game/Blood.js"></script>
+
+<!-- Peeps -->
+<script src="js/peeps/NormalPeep.js"></script>
+<script src="js/peeps/CrazyPeep.js"></script>
+<script src="js/peeps/NervousPeep.js"></script>
+<script src="js/peeps/SnobbyPeep.js"></script>
+<script src="js/peeps/AngryPeep.js"></script>
+<script src="js/peeps/HatPeep.js"></script>
+<script src="js/peeps/LoverPeep.js"></script>
+<script src="js/peeps/ProtestAnim.js"></script>
+<script src="js/peeps/HelpingAnim.js"></script>
+<script src="js/peeps/HappyWeirdoPeep.js"></script>
+<script src="js/peeps/EvilHatPeep.js"></script>
+<script src="js/peeps/PanicPeep.js"></script>
+<script src="js/peeps/MurderPeep.js"></script>
+
+<!-- Misc Crap -->
+<script src="js/misc/Candlelight.js"></script>
+<script src="js/misc/LoversWatching.js"></script>
+<script src="js/misc/Cricket.js"></script>
+<script src="js/misc/Cursor.js"></script>
+
+<!-- Scenes -->
+<script src="js/scenes/Scene_Preloader.js"></script>
+<script src="js/scenes/Scene_Quote.js"></script>
+<script src="js/scenes/Scene_Game.js"></script>
+<script src="js/scenes/Scene_Credits.js"></script>
+<script src="js/scenes/Scene_Post_Credits.js"></script>
+<script src="js/scenes/Scene_Post_Post_Credits.js"></script>
+<script src="js/scenes/Scene_EndPrototype.js"></script>
+<script src="js/scenes/Act_I.js"></script>
+<script src="js/scenes/Act_II.js"></script>
+<script src="js/scenes/Act_III.js"></script>
+<script src="js/scenes/Scene_Meta.js"></script>
+
+<!-- Game Scripts -->
+<script>
+Game.stats = false;
+window.onload = function(){
+	try{
+		Game.init();
+		//Game.init("Game");
+	}catch(e){
+		document.getElementById("warning").style.display = "block";
+	}
+};
+window.SHARE_TEXT = "I just played this really weird game about the news. WE BECOME WHAT WE BEHOLD:"
+window.SHARE_URL = "https://ncase.itch.io/wbwwb";
+</script>

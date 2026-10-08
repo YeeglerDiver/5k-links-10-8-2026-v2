@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=503",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="SpongeBob SquarePants: Land Ho!"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+		<meta charset="utf-8">
+		<title>Flambe Game (JSEmbed)</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	 	<base href="https://cdn.jsdelivr.net/gh/waycrosspublicmedia/whatver/spongebob-landho/">
+	 	<!-- Nick.com jsembed 1.0.3 -->
+		<script src="jsembed.js"></script>
+
+		<!-- jsembed 1.0.5 https://github.com/josimard/JSEmbed
+		<script src="js/jsembed.js"></script> -->
+
+		<script type="text/javascript">	
+			// Automatically set the jsembed base path
+			var base = window.location.pathname;
+			base = base.substring(0, base.lastIndexOf("/"));
+
+			// Parameters to configure jsembed
+			var params = {
+				base: "https://cdn.jsdelivr.net/gh/waycrosspublicmedia/whatver/spongebob-landho/", // Set a base url of all app content. Defaults "".
+				api: "flambe", // supported custom apis are defined in jsembed. Defaults "none".
+				scaletype: "fit", // update window.canvasScale on window resize? Defaults "fit". 
+				
+				// Also supports "fill", "fillto" and "none."
+				//indexroot: "true", // use the current index url as the path root? 
+				//If false uses domain root instead. Defaults false (use domain root).	
+				
+				allowtouchmove: "false", // allow the page to scroll when user drags or swipes? Defaults to false.
+				//maxwidth: 1024, //The maximum width to scale the canvas to. Only works with fillto.
+				//maxheight: 640, //The maximum height to scale the canvas to. Only works with fillto.		  
+				//libs: ["flambe.js"] // array of libs to embed before trying to launch app. 
+				//Defaults []. Libs will load from base url unless you set libsIgnoreBase: "true" param.
+				
+				// 1.0.5+ Params
+				//scalecanvas: "style", // Use "style" for jsembed to resize the canvas element (hardware scaling), default: "none"
+				//align:"center middle" // When scaletype is 'fit', it will align the canvas accordingly.
+			}
+
+			// Attributes will be set on the embed target for use by the app. "base" will be set as well.
+			var attr = {				
+
+			};
+
+			jsembed.embed("flambe.js", "embedtarget", "960", "560", params, attr);
+
+		</script>
+
+		<!-- Canada Tracking: see "canada_tracking" option in config.json -->
+		<script language="JavaScript">
+		function trackFlashEvent(gameTitle,gameEvent,playEvent)
+		{
+			//console.log('Tracking:', gameTitle, gameEvent, playEvent);
+		}
+		</script>
+	<!-- Google Analytics -->
+
+
+</head>
+	<body style="padding: 0; margin: 0; background-color: black;">
+		<div id="embedtarget"></div>	
+	<link rel="preload" href="/privacy.css" as="style" />
+</body>
+</html>

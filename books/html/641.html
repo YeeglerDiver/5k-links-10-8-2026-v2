@@ -1,0 +1,191 @@
+<html lang="en">
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/ugss@main/idkgodzila/">
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=617",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Godzilla Daikaiju Battle Royale"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>really cool flash game </title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+    }
+    #flash-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: black;
+    }
+    ruffle-player {
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: block;
+    }
+    #loading-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      text-align: center;
+      z-index: 1000;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle@0.2.0-nightly.2025.10.2/ruffle.min.js"></script>
+<!-- Google Analytics -->
+
+
+</head>
+<body>
+  <div id="loading-text">Loading game... 0%</div>
+  <div id="flash-container"></div>
+  <script>
+    const container = document.getElementById("flash-container");
+    const loadingText = document.getElementById("loading-text");
+
+    function mergeSWFParts(fileParts) {
+      return new Promise((resolve, reject) => {
+        let buffers = [];
+        let totalSize = 0;
+        let loadedSize = 0;
+
+        function updateProgress() {
+          if (totalSize > 0) {
+            const pct = Math.round((loadedSize / totalSize) * 100);
+            if (loadingText) {
+              loadingText.textContent = `Loading game... ${pct}%`;
+            }
+          }
+        }
+
+        function fetchPart(i) {
+          if (i >= fileParts.length) {
+            if (loadingText) {
+              loadingText.textContent = 'Merging files...';
+            }
+            let mergedBlob = new Blob(buffers, { type: 'application/x-shockwave-flash' });
+            let mergedUrl = URL.createObjectURL(mergedBlob);
+            resolve(mergedUrl);
+            return;
+          }
+
+          fetch(fileParts[i])
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Failed to load ${fileParts[i]}: ${response.status}`);
+              }
+              const contentLength = response.headers.get('content-length');
+              if (contentLength) {
+                totalSize += parseInt(contentLength);
+              }
+              return response.arrayBuffer();
+            })
+            .then(data => {
+              buffers.push(data);
+              loadedSize += data.byteLength;
+              updateProgress();
+              fetchPart(i + 1);
+            })
+            .catch(reject);
+        }
+
+        fetchPart(0);
+      });
+    }
+
+    function getSWFParts(baseFile, start, end) {
+      let arr = [];
+      for (let i = start; i <= end; i++) {
+        arr.push(`${baseFile}.part${i}`);
+      }
+      return arr;
+    }
+
+    function resizeGame() {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const aspectRatio = 4 / 3;
+      let width = Math.floor(windowWidth);
+      let height = Math.floor(windowWidth / aspectRatio);
+      if (height > windowHeight) {
+        height = Math.floor(windowHeight);
+        width = Math.floor(height * aspectRatio);
+      }
+      container.style.width = `${width}px`;
+      container.style.height = `${height}px`;
+    }
+
+    window.addEventListener("resize", resizeGame);
+
+    window.addEventListener("DOMContentLoaded", () => {
+      resizeGame();
+      
+      console.log('Starting SWF merge...');
+      
+      const swfParts = getSWFParts('gdbr.swf', 1, 3); 
+      
+      const useSingleFile = false; 
+      const singleFileUrl = "gdbr.swf";
+
+      const loadPromise = useSingleFile 
+        ? Promise.resolve(singleFileUrl)
+        : mergeSWFParts(swfParts);
+
+      loadPromise
+        .then(swfUrl => {
+          console.log('SWF ready, loading into Ruffle...');
+          if (loadingText) {
+            loadingText.textContent = 'Starting game...';
+          }
+
+          const ruffle = window.RufflePlayer?.newest() || window.RufflePlayer?.createPlayer();
+          if (ruffle && container) {
+            const player = ruffle.createPlayer();
+            player.style.width = "100%";
+            player.style.height = "100%";
+            player.style.background = "black";
+            container.appendChild(player);
+            
+            player.load(swfUrl).then(() => {
+              console.log('Game loaded successfully');
+              if (loadingText) {
+                loadingText.remove();
+              }
+            }).catch(err => {
+              console.error('Ruffle load error:', err);
+              if (loadingText) {
+                loadingText.textContent = 'Error loading game: ' + err.message;
+              }
+            });
+          } else {
+            console.error('Ruffle not available');
+            if (loadingText) {
+              loadingText.textContent = "Ruffle failed to load.";
+            }
+          }
+        })
+        .catch(err => {
+          console.error('SWF merge error:', err);
+          if (loadingText) {
+            loadingText.textContent = 'Error loading game files: ' + err.message;
+          }
+        });
+    });
+  </script>
+</body>
+</html>

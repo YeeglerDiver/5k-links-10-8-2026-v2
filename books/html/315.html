@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=296",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Jelly Mario"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/315/">
+    
+    
+    <title>Jelly Mario</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body {
+            color: white;
+            font-family: "Lucida Grande", sans-serif;
+            font-size: 12px;
+            font-weight: normal;
+            text-align: center;
+            background-color: #000000;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        /*
+        @media screen and (min-aspect-ratio: 256/240) {
+            canvas {
+                overflow-y: auto;
+                height: 100%;
+            }
+        }
+
+        @media screen and (max-aspect-ratio: 256/240) {
+            canvas {
+                overflow-x: auto;
+                width: 100%;
+            }
+        }
+        */
+
+        #container-container {
+            width:100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #adcontainer {
+            height: 100%;
+            width: 300px;
+            background-color:red;
+        }
+
+        #container {
+            /*
+            width:100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            */
+            overflow: hidden;
+        }
+
+        #loading, #mobile-info, #play {
+            width:100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mobile-info {
+            display:none;
+            flex-direction: column;
+        }
+
+        #toggleSound {
+            left: 5px;
+            bottom: 5px;
+            position: absolute;
+        }
+
+        #info {
+            right: 5px;
+            bottom: 5px;
+            position: absolute;
+        }
+
+        #version {
+            top: 5px;
+            right: 5px;
+            position: absolute;
+        }
+
+        #hashtag {
+            top: 5px;
+            left: 5px;
+            position: absolute;
+            display: table;
+        }
+        #hashtag * {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    </style>
+<!-- Google Analytics -->
+
+
+</head>
+<body>
+
+<div id="mobile-info">
+    <p id="mobile-info-message">Jelly Mario does not work on mobile, sorry :(</p>
+</div>
+
+<div id="loading">
+Loading&nbsp;<span id="loadedPercent">0</span>%
+</div>
+
+<div id="play" style="display:none">
+<input hidden id="playButton" type="submit" value="Start game" />
+</div>
+
+<div id="toggleSound">
+    Sound <input id="toggleSoundCheckbox" type="checkbox" checked="checked" value="1"/>
+</div>
+
+<table width="100%" height="100%" style="table-layout:fixed; border: none;" cellspacing="0" cellpadding="0">
+    <tr>
+        <td id="container"></td>
+    </tr>
+</table>
+
+<script src="lib/three.min.js"></script>
+<script src="lib/stats.min.js"></script>
+<script src="lib/dat.gui.min.js"></script>
+<script src="build/main.js?2"></script>
+<script>
+    window.onload = function () {
+        document.getElementById('playButton').click();
+    }
+    </script>
+</body>
+</html>

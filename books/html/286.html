@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=267",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Endoparasitic"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+	<base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/286/">
+	<meta charset='utf-8' />
+	<meta name='viewport' content='width=device-width, user-scalable=no' />
+	<title>Endoparasitic</title>
+	<link rel="stylesheet" href="style.css">
+<link id='-gd-engine-icon' rel='icon' type='image/png' href='Endoparasitic.icon.png' />
+<link rel='apple-touch-icon' href='Endoparasitic.apple-touch-icon.png'/>
+
+<!-- Google Analytics -->
+
+
+</head>
+<body>
+	<script src="main.js"></script>
+    <div id="loading-text" style="color: white; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">LOADING...</div>
+	<canvas id='canvas'>
+		HTML5 canvas appears to be unsupported in the current browser.<br />
+		Please try updating or use a different browser.
+	</canvas>
+	<div id='status'>
+		<div id='status-progress' style='display: none;' oncontextmenu='event.preventDefault();'><div id ='status-progress-inner'></div></div>
+		<div id='status-indeterminate' style='display: none;' oncontextmenu='event.preventDefault();'>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+		<div id='status-notice' class='godot' style='display: none;'></div>
+	</div>
+
+	<script type='text/javascript' src='Endoparasitic.js'></script>
+	<script type='text/javascript'>//<![CDATA[
+
+		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"Endoparasitic","experimentalVK":false,"fileSizes":{"Endoparasitic.pck":129276352,"Endoparasitic.wasm":17867504},"focusCanvas":true,"gdnativeLibs":[]};
+		var engine = new Engine(GODOT_CONFIG);
+
+		window.godotrunfunction = function() {
+			const INDETERMINATE_STATUS_STEP_MS = 100;
+			var statusProgress = document.getElementById('status-progress');
+			var statusProgressInner = document.getElementById('status-progress-inner');
+			var statusIndeterminate = document.getElementById('status-indeterminate');
+			var statusNotice = document.getElementById('status-notice');
+			document.getElementById("loading-text").remove();
+
+			var initializing = true;
+			var statusMode = 'hidden';
+
+			var animationCallbacks = [];
+			function animate(time) {
+				animationCallbacks.forEach(callback => callback(time));
+				requestAnimationFrame(animate);
+			}
+			requestAnimationFrame(animate);
+
+			function setStatusMode(mode) {
+
+				if (statusMode === mode || !initializing)
+					return;
+				[statusProgress, statusIndeterminate, statusNotice].forEach(elem => {
+					elem.style.display = 'none';
+				});
+				animationCallbacks = animationCallbacks.filter(function(value) {
+					return (value != animateStatusIndeterminate);
+				});
+				switch (mode) {
+					case 'progress':
+						statusProgress.style.display = 'block';
+						break;
+					case 'indeterminate':
+						statusIndeterminate.style.display = 'block';
+						animationCallbacks.push(animateStatusIndeterminate);
+						break;
+					case 'notice':
+						statusNotice.style.display = 'block';
+						break;
+					case 'hidden':
+						break;
+					default:
+						throw new Error('Invalid status mode');
+				}
+				statusMode = mode;
+			}
+
+			function animateStatusIndeterminate(ms) {
+				var i = Math.floor(ms / INDETERMINATE_STATUS_STEP_MS % 8);
+				if (statusIndeterminate.children[i].style.borderTopColor == '') {
+					Array.prototype.slice.call(statusIndeterminate.children).forEach(child => {
+						child.style.borderTopColor = '';
+					});
+					statusIndeterminate.children[i].style.borderTopColor = '#dfdfdf';
+				}
+			}
+
+			function setStatusNotice(text) {
+				while (statusNotice.lastChild) {
+					statusNotice.removeChild(statusNotice.lastChild);
+				}
+				var lines = text.split('\n');
+				lines.forEach((line) => {
+					statusNotice.appendChild(document.createTextNode(line));
+					statusNotice.appendChild(document.createElement('br'));
+				});
+			};
+
+			function displayFailureNotice(err) {
+				var msg = err.message || err;
+				console.error(msg);
+				setStatusNotice(msg);
+				setStatusMode('notice');
+				initializing = false;
+			};
+
+			if (!Engine.isWebGLAvailable()) {
+				displayFailureNotice('WebGL not available');
+			} else {
+				setStatusMode('indeterminate');
+				engine.startGame({
+					'onProgress': function (current, total) {
+						if (total > 0) {
+							statusProgressInner.style.width = current/total * 100 + '%';
+							setStatusMode('progress');
+							if (current === total) {
+								// wait for progress bar animation
+								setTimeout(() => {
+									setStatusMode('indeterminate');
+								}, 500);
+							}
+						} else {
+							setStatusMode('indeterminate');
+						}
+					},
+				}).then(() => {
+					setStatusMode('hidden');
+					initializing = false;
+				}, displayFailureNotice);
+			}
+		}
+	//]]></script>
+</body>
+</html>
+

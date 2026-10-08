@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en-us">
+
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=1322",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Promises to Keep"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Promises to Keep</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json" crossorigin="use-credentials" />
+  <link rel="icon" href="icons/icon-72x72.png" sizes="72x72" type="image/png" />
+  <link rel="icon" href="icons/icon-96x96.png" sizes="96x96" type="image/png" />
+  <link rel="icon" href="icons/icon-128x128.png" sizes="128x128" type="image/png" />
+  <link rel="icon" href="icons/icon-144x144.png" sizes="144x144" type="image/png" />
+  <link rel="icon" href="icons/icon-152x152.png" sizes="152x152" type="image/png" />
+  <link rel="icon" href="icons/icon-192x192.png" sizes="192x192" type="image/png" />
+  <link rel="icon" href="icons/icon-384x384.png" sizes="384x384" type="image/png" />
+  <link rel="icon" href="icons/icon-512x512.png" sizes="512x512" type="image/png" />
+  <!-- ios support -->
+  <link rel="apple-touch-icon" href="icons/icon-72x72.png" sizes="72x72" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-96x96.png" sizes="96x96" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-128x128.png" sizes="128x128" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-144x144.png" sizes="144x144" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-152x152.png" sizes="152x152" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png" sizes="192x192" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-384x384.png" sizes="384x384" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-512x512.png" sizes="512x512" type="image/png" />
+
+  <meta name="theme-color" content="#000" />
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  
+  
+
+  <style>
+    html {
+      background: #444;
+      font-family: sans-serif;
+    }
+
+    body, html {
+      overscroll-behavior: none;
+    }
+
+    #canvas, #overlayDiv {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+
+      width: 100%;
+      height: 100%;
+
+      border: 0 none;
+    }
+
+    #canvas {
+      background: #000;
+    }
+
+    .visible {
+      visibility: visible;
+      opacity: 1.0;
+      transition: opacity .1s linear;
+    }
+
+    .hidden {
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s .25s, opacity .25s linear;
+    }
+
+    #statusDiv, #inputDiv {
+      background: rgba(0, 0, 0, 0.75);
+      width: 50%;
+      margin: auto;
+      min-width: 340px;
+      padding: 10px;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      border-radius: 0 0 5px 5px;
+    }
+
+    #statusTextDiv {
+      overflow: auto;
+      max-height: 40vh;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    #statusProgress {
+      display: none;
+      width: 100%;
+    }
+
+    #inputDiv {
+      width: 65%;
+      padding-left: 10px;
+      padding-right: 20px;
+    }
+
+    #inputPrompt {
+      color: #eee;
+      font-size: 150%;
+      margin-bottom: 1em;
+      margin-top: 1em;
+
+    }
+
+    #inputText {
+      width: 100%;
+      font-size: 175%;
+      padding: 5px;
+      background: inherit;
+      color: #eee;
+    }
+
+    #inputText:focus {
+      color: #ffffff;
+    }
+
+    #ContextContainer {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      color: white;
+    }
+
+    #ContextContainer.shown {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 0px 0px 5px 0px;
+    }
+
+    #ContextButton {
+      text-decoration: none;
+      color: lightgrey;
+      font-size: xx-large;
+      cursor: pointer;
+      user-select: none;
+      -moz-user-select: none;
+      padding: 10px 10px;
+      opacity: .75;
+    }
+
+    #ContextButton:focus {
+      outline: none;
+      color: #ffffff;
+      opacity: 1.0;
+    }
+
+    #ContextMenu a {
+      text-decoration: none;
+      color: lightgrey;
+      background: #444;
+      height: 48px;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid lightgrey;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 5px 5px;
+      opacity: 1.0;
+    }
+
+    #ContextMenu a:hover {
+      text-decoration: none;
+      background: #666666;
+      color: #ffffff
+    }
+
+    #presplash {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+  </style>
+
+</head>
+
+<body>
+  <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+  <div id="overlayDiv"></div>
+
+  <img id="presplash" src="web-presplash.jpg">
+
+  <div id="ContextContainer">
+    <a id="ContextButton">&#8801;</a><br />
+    <div id="ContextMenu" style="display: none;">
+      <input id="ID_SavegamesImport" type="file" onchange="onSavegamesImport(this)" accept="application/zip"
+        style=display:none></input>
+      <a href="javascript:document.getElementById('ID_SavegamesImport').click();">Import Saves</a>
+      <a href="javascript:onSavegamesExport();">Export Saves</a>
+      <a href="javascript:FSDownload('/log.txt', 'text/plain');">Download Log</a>
+      <a href="https://www.renpy.org/" target="_blank">
+          Powered by Ren'Py
+      </a>
+      </span>
+    </div>
+  </div>
+
+  <div id="statusDiv" class="hidden">
+    <div id="statusTextDiv"></div>
+    <progress id="statusProgress" value="0" max="100"></progress>
+  </div>
+
+  <div id="inputDiv" class="hidden">
+    <form id="inputForm">
+      <div id="inputPrompt"></div>
+      <input id="inputText" type="text">
+    </form>
+  </div>
+
+  <script>
+      // The URL to game.zip, relative to the URL of this file.
+      window.gameZipURL = 'game.zip';
+
+      // Register the service worker.
+      if (navigator.serviceWorker) {
+          if (!navigator.serviceWorker.controller) {
+              navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'all' });
+          }
+      }
+  </script>
+  <script src="renpy-pre.js"></script>
+  <script async type="text/javascript" src="renpy.js"></script>
+</body>
+
+</html>

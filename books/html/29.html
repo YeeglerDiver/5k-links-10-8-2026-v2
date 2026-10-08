@@ -1,0 +1,86 @@
+<!doctype html>
+
+<head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=32",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Bazooka Boy"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+    
+    
+    
+    <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/bazooka-boy/">
+    <script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="dEkCONaa23D47oC-g3LdhA"></script>
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <style>
+        body {
+            overflow-y: none;
+            margin: 0;
+            width: 100%;
+            position: fixed;
+            background: #ff4e21;
+        }
+
+        #loading {
+            width: 100vw;
+            height: 100vh;
+            background: #ff4e21;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        @media (orientation: landscape) {
+            #loading {
+                width: 50vw;
+            }
+        }
+
+        @media (orientation: portrait) {
+            #loading {
+                width: 100vw;
+            }
+        }
+
+        #loading_logo {
+            text-align: center;
+            width: 50%;
+            height: fit-content;
+        }
+
+        #loading_bar {
+            width: 50%;
+            height: 11px;
+            background: rgba(0, 0, 0, 0.25);
+            margin-top: 100px;
+            display: flex;
+        }
+
+        #loading_bar_progress {
+            width: 0%;
+            height: 11px;
+        }
+
+        #loading_text {
+            color: white;
+        }
+    </style>
+<!-- Google Analytics -->
+
+
+</head>
+
+<body><canvas id="canvas" style="position: absolute; top: 0; left: 0; display: none;"></canvas>
+    <div id="loading"><img id="loading_logo" src="assets/2d/loading/Loading_Logo.png" alt="Super Sonic Logo">
+        <div id="loading_bar"><img id="loading_bar_progress" src="assets/2d/loading/Loading_Bar_Full.png" alt="Loading_Bar_Full"></div>
+        <h3 id="loading_text">Loading...</h3>
+    </div>
+    <div id="console-log" style="position: absolute; top: 0; left: 0"></div>
+    <script defer="defer" src="vendor.f0ea44553244713d397b.js" nonce="dEkCONaa23D47oC-g3LdhA"></script>
+    <script defer="defer" src="main.5889165dfcd7922a0793.js" nonce="dEkCONaa23D47oC-g3LdhA"></script>
+</body>

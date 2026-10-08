@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=868",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Meme2048"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+        <meta charset="utf-8" />
+        <title>Meme 2048</title>
+
+        <link href="style/main.css" rel="stylesheet" type="text/css" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="apple-touch-icon" href="meta/apple-touch-icon.png" />
+        <link rel="apple-touch-startup-image" href="meta/apple-touch-startup-image-640x1096.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+        <!-- iPhone 5+ -->
+        <link rel="apple-touch-startup-image" href="meta/apple-touch-startup-image-640x920.png" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" />
+        <!-- iPhone, retina -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="MobileOptimized" content="320" />
+        <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no, minimal-ui" />
+
+        <!-- here is a list of all the memes! -->
+        <style>
+            .tile-inner {
+                background-position: center center !important;
+                background-size: cover !important;
+                background-repeat: no-repeat !important;
+                text-indent: -999px;
+                overflow: hidden;
+            }
+            .tile.tile-2 .tile-inner {
+                background-image: url("img/honey_badger.jpg") !important;
+            }
+            .tile.tile-4 .tile-inner {
+                background-image: url("img/tron_guy.jpg") !important;
+            }
+            .tile.tile-8 .tile-inner {
+                background-image: url("img/peanut_butter_jelly_time.gif") !important;
+            }
+            .tile.tile-16 .tile-inner {
+                background-image: url("img/numa_numa.gif") !important;
+            }
+            .tile.tile-32 .tile-inner {
+                background-image: url("img/dramatic_chipmunk.gif") !important;
+            }
+            .tile.tile-64 .tile-inner {
+                background-image: url("img/star_wars_kid.gif") !important;
+            }
+            .tile.tile-128 .tile-inner {
+                background-image: url("img/leave_britney_alone.jpg") !important;
+            }
+            .tile.tile-256 .tile-inner {
+                background-image: url("img/keyboard_cat.gif") !important;
+            }
+            .tile.tile-512 .tile-inner {
+                background-image: url("img/ceiling_cat.png") !important;
+            }
+            .tile.tile-1024 .tile-inner {
+                background-image: url("img/hello_my_future_girlfriend.jpg") !important;
+            }
+            .tile.tile-2048 .tile-inner {
+                background-image: url("img/dancing_baby.gif") !important;
+            }
+        </style>
+    <!-- Google Analytics -->
+
+
+</head>
+    <script type="application/javascript" src="/js/main.js"></script>
+    <body>
+        <div class="container">
+            <div class="heading">
+                <h1 class="title"><marquee>Meme 2048</marquee></h1>
+                <div class="scores-container">
+                    <div class="score-container">0</div>
+                    <div class="best-container">0</div>
+                </div>
+            </div>
+
+            <div class="above-game">
+                <p class="game-intro"><img src="img/hot.gif" /> Join the memes! <img src="img/hot.gif" /></p>
+                <a class="restart-button">New Game</a>
+            </div>
+
+            <div class="game-container">
+                <div class="game-message">
+                    <p></p>
+                    <div class="lower">
+                        <a class="keep-playing-button">Keep going</a>
+                        <a class="retry-button">Try again</a>
+                    </div>
+                </div>
+
+                <div class="grid-container">
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                </div>
+
+                <div class="tile-container"></div>
+            </div>
+
+            <p class="game-explanation"><strong class="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with the same meme touch, they <strong>merge into one!</strong></p>
+            <hr />
+            <p>
+                Original version created by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli.</a> Based on <a href="https://itunes.apple.com/us/app/1024!/id823499224" target="_blank">1024 by Veewo Studio</a> and
+                conceptually similar to <a href="http://asherv.com/threes/" target="_blank">Threes by Asher Vollmer.</a><br />
+                <br />
+            </p>
+        </div>
+        <script src="js/bind_polyfill.js"></script>
+        <script src="js/classlist_polyfill.js"></script>
+        <script src="js/animframe_polyfill.js"></script>
+        <script src="js/keyboard_input_manager.js"></script>
+        <script src="js/html_actuator.js"></script>
+        <script src="js/grid.js"></script>
+        <script src="js/tile.js"></script>
+        <script src="js/local_storage_manager.js"></script>
+        <script src="js/game_manager.js"></script>
+        <script src="js/application.js"></script>
+</body>
+</html>

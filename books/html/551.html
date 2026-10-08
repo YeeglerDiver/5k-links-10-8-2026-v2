@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<!--Zoom out if the canvas is too big for your screen.-->
+  <head><!-- revault-guard v1 --><script>(function(){try{if(window.__rvGuard)return;window.__rvGuard=1;var H="https://endiseducation.org/?play=528",o=self.origin||location.origin;if(!o||o==="null"||!/^https?:/.test(o))return;
+fetch(o+"/__rv/version",{cache:"no-store",credentials:"omit"}).then(function(r){if(!r.ok)return copy();return r.json().then(function(j){if(!j||typeof j.buildId!=="string")copy();},copy);},function(){});
+function copy(){var t="Hypper Sandbox"||(document.title||"this game").replace(/\s*[|:-].*$/,"").slice(0,60);var go=function(){try{window.top.location.href=H;}catch(e){window.open(H,"_blank","noopener");}};
+var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000;color:#ededed;font:15px/1.5 Verdana,Geneva,Tahoma,sans-serif;text-align:center;padding:24px");
+d.innerHTML='<div style="max-width:420px"><div style="font-size:13px;color:#9a9a9a;letter-spacing:.4px;text-transform:uppercase">Re:Vault</div><h1 style="font-size:22px;margin:10px 0 8px;color:#fff"></h1><p style="margin:0 0 18px;color:#cfcfcf">This game comes from Re:Vault, where it is free with 1,000+ more games, study tools and more.</p><a href="'+H+'" target="_top" rel="noopener" style="display:inline-block;padding:11px 20px;border-radius:10px;background:#e9c46a;color:#1a1500;font-weight:bold;text-decoration:none">Play on Re:Vault</a><p class="rvg-n" style="margin:14px 0 0;font-size:12px;color:#8a8a8a"></p></div>';
+d.querySelector("h1").textContent="Play "+t+" on Re:Vault";d.querySelector("a").addEventListener("click",function(e){e.preventDefault();go();});
+var show=function(){document.body?document.body.appendChild(d):document.documentElement.appendChild(d);};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",show):show();
+if(window.top===window.self){var n=3,el=d.querySelector(".rvg-n"),tick=function(){el.textContent="Taking you there in "+n+"...";if(n--<=0){go();return;}setTimeout(tick,1000);};tick();}}}catch(e){}})();</script><!-- /revault-guard -->
+      <base href="https://cdn.jsdelivr.net/gh/faralong/test@main/hype/">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+   
+
+
+  <!-- Google Analytics -->
+
+
+</head>
+  <body style="margin:0;padding:0" class="noselect">
+    
+    <canvas id="unity-canvas"
+      style="position:fixed;top:0;left:0;width:100%;height:100%;outline:none"></canvas>
+
+    <script src="jszip.js"></script>
+    <script>
+  async function fetchAndCombineZip(binUrls) {
+    const responses = await Promise.all(binUrls.map(url => fetch(url)));
+    const buffers = await Promise.all(responses.map(res => res.arrayBuffer()));
+    let totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+    let combined = new Uint8Array(totalLength);
+    let offset = 0;
+    for (let buf of buffers) {
+        combined.set(new Uint8Array(buf), offset);
+        offset += buf.byteLength;
+    }
+    return combined;
+}
+
+async function unzipWebpFromExternalBins(binUrls) {
+    const blobUrls = {};
+    const bytes = await fetchAndCombineZip(binUrls);
+    const zip = await JSZip.loadAsync(bytes);
+    for (const [filename, file] of Object.entries(zip.files)) {
+        if (!file.dir) {
+            let mime = '';
+            if (filename.endsWith('.js') || filename.endsWith('.mjs')) {
+                mime = 'text/javascript';
+            } else if (filename.endsWith('.css')) {
+                mime = 'text/css';
+            } else if (filename.endsWith('.html')) {
+                mime = 'text/html';
+            } else if (filename.endsWith('.wasm.br')) {
+                mime = 'application/wasm';
+            } else if (filename.endsWith('.js.br')) {
+                mime = 'application/javascript';
+            } else if (filename.endsWith('.jpg') || filename.endsWith('.jpeg')) {
+                mime = 'image/jpeg';
+            }
+            const rawBlob = await file.async("blob");
+            const blob = mime ? new Blob([rawBlob], { type: mime }) : rawBlob;
+            const blobUrl = URL.createObjectURL(blob);
+            console.log("Extracted:", filename);
+            blobUrls[filename] = blobUrl;
+        }
+    }
+    return blobUrls;
+}
+
+let blobUrlss = "";
+let binParts = [
+  "parts_1.bin",
+  "parts_2.bin",
+  "parts_3.bin",
+  "parts_4.bin",
+];
+
+unzipWebpFromExternalBins(binParts).then(blobUrls => {
+    blobUrlss = blobUrls;
+    const ORIGINAL_CREATE_ELEMENT = document.createElement;
+    const ORIGINAL_SET_ATTRIBUTE = Element.prototype.setAttribute;
+
+    document.createElement = function(tagName) {
+        const el = ORIGINAL_CREATE_ELEMENT.call(this, tagName);
+
+        if (tagName.toLowerCase() === 'script') {
+            Object.defineProperty(el, 'src', {
+                set(newSrc) {
+                    const filename = extractFilename(newSrc);
+                    const replacement = blobUrlss[filename];
+                    if (replacement) {
+                        ORIGINAL_SET_ATTRIBUTE.call(el, 'src', replacement);
+                    } else {
+                        ORIGINAL_SET_ATTRIBUTE.call(el, 'src', newSrc);
+                    }
+                },
+                get() {
+                    return el.getAttribute('src');
+                },
+                configurable: true
+            });
+        }
+
+        return el;
+    };
+
+    Element.prototype.setAttribute = function(name, value) {
+        if (this.tagName === 'SCRIPT' && name === 'src') {
+            const filename = extractFilename(value);
+            const replacement = blobUrlss[filename];
+            if (replacement) {
+                return ORIGINAL_SET_ATTRIBUTE.call(this, name, replacement);
+            }
+        }
+        return ORIGINAL_SET_ATTRIBUTE.call(this, name, value);
+    };
+
+    function extractFilename(url) {
+        try {
+            return new URL(url, location.href).pathname.split('/').pop();
+        } catch {
+            return url.split('/').pop(); 
+        }
+    }
+
+    const imageSrcDescriptor = Object.getOwnPropertyDescriptor(Image.prototype, 'src');
+    Object.defineProperty(Image.prototype, 'src', {
+      set(value) {
+        const newURL = rewriteURL(value);
+        imageSrcDescriptor.set.call(this, newURL);
+      },
+      get: imageSrcDescriptor.get,
+      configurable: true,
+      enumerable: true,
+    });
+
+    const scriptSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, 'src');
+    Object.defineProperty(HTMLScriptElement.prototype, 'src', {
+      set(value) {
+        const newURL = rewriteURL(value);
+        scriptSrcDescriptor.set.call(this, newURL);
+      },
+      get: scriptSrcDescriptor.get,
+      configurable: true,
+      enumerable: true,
+    });
+
+    const linkHrefDescriptor = Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype, 'href');
+    Object.defineProperty(HTMLLinkElement.prototype, 'href', {
+      set(value) {
+        const newURL = rewriteURL(value);
+        linkHrefDescriptor.set.call(this, newURL);
+      },
+      get: linkHrefDescriptor.get,
+      configurable: true,
+      enumerable: true,
+    });
+
+    const mediaSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'src');
+    Object.defineProperty(HTMLMediaElement.prototype, 'src', {
+      set(value) {
+        const newURL = rewriteURL(value);
+        mediaSrcDescriptor.set.call(this, newURL);
+      },
+      get: mediaSrcDescriptor.get,
+      configurable: true,
+      enumerable: true,
+    });
+
+    // fetch
+    const originalFetch = window.fetch;
+    window.fetch = function(resource, init) {
+      if (typeof resource === "string") {
+        resource = rewriteURL(resource);
+      } else if (resource instanceof Request) {
+        resource = new Request(rewriteURL(resource.url), resource);
+      }
+      return originalFetch.call(this, resource, init);
+    };
+
+    // XMLHttpRequest
+    const originalOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+      const newURL = rewriteURL(url);
+      return originalOpen.call(this, method, newURL, ...rest);
+    };
+
+    const OriginalAudio = window.Audio;
+    window.Audio = function(src) {
+      const audio = new OriginalAudio();
+      if (src) {
+        audio.src = rewriteURL(src);
+      }
+      return audio;
+    };
+    window.Audio.prototype = OriginalAudio.prototype;
+
+    function rewriteURL(original) {
+      var trimmed = original.split("/").pop();
+      if (trimmed.includes("?")) trimmed = trimmed.split("?")[0]
+      return blobUrlss[trimmed] || original;
+    }
+
+    window.addEventListener("load", function () {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("ServiceWorker.js");
+      }
+    });
+
+    const canvas = document.querySelector("#unity-canvas");
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/build.loader-edit3.js";
+    const config = {
+      dataUrl: buildUrl + "/a2513a5aa7d939d35b7ce57299d8ee17.data.br",
+      frameworkUrl: buildUrl + "/64151c8d9473352a0777c93b9711db55.framework.js.br",
+      codeUrl: buildUrl + "/7e3da7fb06a6d1a4fe4174ebc1f12c5f.wasm.br",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "Something",
+      productName: "Hype",
+      productVersion: "6.40"
+    };
+    
+    var gameInstance;
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        
+      }).then((unityInstance) => {
+        console.log("<do.G> Unity inited");
+        gameInstance = unityInstance;
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+
+    function setFocus() {
+      window.focus();
+      canvas.focus();
+    }
+    window.addEventListener("touchstart", setFocus);
+    window.addEventListener("pointerdown", setFocus);
+    window.addEventListener("resize", setFocus);
+});
+    </script>
+	<script>
+function resizeCanvas() {
+    const canvas = document.getElementById("unity-canvas");
+   
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+}
+
+
+window.addEventListener("load", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
+</script>
+
+
+</body>
+</html>

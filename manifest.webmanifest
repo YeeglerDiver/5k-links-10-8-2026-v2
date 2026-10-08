@@ -1,0 +1,26 @@
+{
+	"id": "/",
+	"name": "Re:Vault - Study Browser",
+	"short_name": "Re:Vault",
+	"description": "A fast, private study browser and learning workspace for Chromebooks - a built-in library, study tools, worksheets, and research in one place.",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"orientation": "any",
+	"background_color": "#000000",
+	"theme_color": "#000000",
+	"categories": ["education", "productivity", "books"],
+	"icons": [
+		{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+		{ "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+		{ "src": "/icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+		{ "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+	],
+	"screenshots": [
+		{ "src": "/icons/og.png", "sizes": "1200x630", "type": "image/png", "form_factor": "wide" }
+	],
+	"shortcuts": [
+		{ "name": "Tools", "short_name": "Tools", "url": "/tools", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+		{ "name": "Settings", "short_name": "Settings", "url": "/settings", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+	]
+}
